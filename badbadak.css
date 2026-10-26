@@ -667,3 +667,23 @@ main.wrap:has(#badbadak-view[style*="block"]) { max-width: 980px; }
   .bb-game-heading h2 { font-size: 22px; }
   .bb-game-heading p { font-size: 14px; }
 }
+
+
+/* Button typography wins over the shared reset, matching Pendar tabs */
+#badbadak-view .bb-pills button {
+  font-family: var(--type-ui);
+  font-size: var(--type-tab);
+  line-height: 1.6;
+  font-weight: 650;
+}
+#badbadak-view .bb-horo-strip button,
+#badbadak-view .bb-poll-options button {
+  font-family: var(--type-ui);
+  font-size: 14px;
+  line-height: 1.7;
+}
+@media (max-width: 600px) {
+  #badbadak-view .bb-pills button { font-size: 13px; }
+  #badbadak-view .bb-horo-strip button,
+  #badbadak-view .bb-poll-options button { font-size: 13px; }
+}
