@@ -1,0 +1,44 @@
+name: Refresh Badbadak data
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */3 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: badbadak-data
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Fetch public datasets
+        run: |
+          mkdir -p data
+          for name in stories figures entity-registry trends; do
+            curl -fLsS --retry 2 --max-time 45 "https://pendar.io/data/${name}.json" -o "data/${name}.json.tmp" && mv "data/${name}.json.tmp" "data/${name}.json" || rm -f "data/${name}.json.tmp"
+          done
+          curl -fLsS --retry 2 --max-time 45 'https://pendar.io/data/pendar-series-showcase.json' -o data/series-showcase.json.tmp && mv data/series-showcase.json.tmp data/series-showcase.json || rm -f data/series-showcase.json.tmp
+          curl -fLsS --retry 2 --max-time 45 'https://meshki.media/data/news-feed.json' -o data/meshki-news-feed.json.tmp && mv data/meshki-news-feed.json.tmp data/meshki-news-feed.json || rm -f data/meshki-news-feed.json.tmp
+      - name: Collect independent feeds
+        run: |
+          python scripts/collect_bartarinha.py --out data/bartarinha-feed.json || true
+          python scripts/collect_rokna.py --out data/rokna-feed.json || true
+          python scripts/collect_7sobh.py --out data/7sobh-feed.json || true
+      - name: Keep existing snapshots when a source is temporarily unavailable
+        run: |
+          for f in data/*.json; do python -m json.tool "$f" >/dev/null; done
+      - name: Commit refreshed datasets
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Refresh Badbadak data'
+            git push
+          fi
