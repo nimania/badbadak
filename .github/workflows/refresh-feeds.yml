@@ -1,9 +1,5 @@
 name: Refresh Badbadak data
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'data/**'
   workflow_dispatch:
   schedule:
     - cron: '17 */3 * * *'
