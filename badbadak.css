@@ -599,3 +599,71 @@ main.wrap:has(#badbadak-view[style*="block"]) { max-width: 980px; }
 .bb-celeb-strip img { border-color: #f4a246; }
 .bb-game-card { background: #d8efbd; color: #263247 !important; }
 .bb-bottom-bar { background: #315b9b; }
+
+
+/* Pendar typography scale and Vazirmatn UI face */
+#badbadak-view {
+  --type-ui: "Vazirmatn", Tahoma, Arial, sans-serif;
+  --type-news-title: 18px;
+  --type-news-body: 15px;
+  --type-meta: 12.5px;
+  --type-tab: 14px;
+  font-family: var(--type-ui);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.85;
+}
+#badbadak-view button,
+#badbadak-view input,
+#badbadak-view select,
+#badbadak-view textarea { font-family: var(--type-ui); }
+.bb-masthead-logo { font-family: var(--type-ui); font-size: 27px; font-weight: 800; letter-spacing: 0; }
+.bb-masthead-center { font-family: var(--type-ui); font-size: 12.5px; line-height: 1.7; }
+.bb-masthead-meta { font-family: var(--type-ui); font-size: 12.5px; line-height: 1.75; }
+.bb-masthead-meta .bb-edition { font-size: 13px; }
+.bb-ticker { font-family: var(--type-ui); font-size: 14px; line-height: 1.7; }
+.bb-pills button { font-family: var(--type-ui); font-size: var(--type-tab); line-height: 1.6; font-weight: 650; }
+.bb-headline-mega { font-family: var(--type-ui); font-size: clamp(27px,4vw,35px); font-weight: 700; line-height: 1.6; letter-spacing: 0; }
+.bb-headline-lg { font-family: var(--type-ui); font-size: 19px; font-weight: 700; line-height: 1.7; letter-spacing: 0; }
+.bb-headline-md { font-family: var(--type-ui); font-size: 18px; font-weight: 700; line-height: 1.7; letter-spacing: 0; }
+.bb-headline-sm { font-family: var(--type-ui); font-size: 15px; font-weight: 600; line-height: 1.75; }
+.bb-kicker { font-family: var(--type-ui); font-size: var(--type-meta); line-height: 1.75; font-weight: 650; }
+.bb-lead { font-family: var(--type-ui); font-size: var(--type-news-body); line-height: 1.95; font-weight: 400; }
+.bb-page-ref { font-family: var(--type-ui); font-size: var(--type-meta); line-height: 1.7; }
+.bb-tag { font-family: var(--type-ui); font-size: 12px; line-height: 1.6; }
+.bb-source-tag { font-family: var(--type-ui); font-size: 12px; line-height: 1.6; }
+.bb-num-badge { font-family: var(--type-ui); font-size: 12px; }
+.bb-celeb-strip a { font-family: var(--type-ui); font-size: 14px; line-height: 1.6; }
+.bb-section-title { font-family: var(--type-ui); font-size: 16px; line-height: 1.75; font-weight: 700; }
+.bb-series-card strong { font-family: var(--type-ui); font-size: 15px; line-height: 1.65; }
+.bb-series-card span { font-family: var(--type-ui); font-size: var(--type-meta); line-height: 1.7; }
+.bb-horo-strip button { font-family: var(--type-ui); font-size: 14px; line-height: 1.6; }
+#bb-horo-result { font-family: var(--type-ui); font-size: 15px; line-height: 1.9; }
+.bb-game-card strong { font-family: var(--type-ui); font-size: 15px; line-height: 1.7; }
+.bb-bottom-bar { font-family: var(--type-ui); font-size: var(--type-meta); line-height: 1.7; }
+.bb-crossword { font-family: var(--type-ui); }
+.bb-game-heading h2 { font-family: var(--type-ui); font-size: 27px; line-height: 1.6; font-weight: 700; }
+.bb-game-heading p { font-family: var(--type-ui); font-size: 15px; line-height: 1.9; }
+.bb-poll-options button { font-family: var(--type-ui); font-size: 14px; line-height: 1.7; }
+
+@media (max-width: 600px) {
+  #badbadak-view { font-size: 15px; line-height: 1.9; --type-news-title: 16px; --type-news-body: 14.5px; --type-meta: 12px; --type-tab: 13px; }
+  .bb-masthead-logo { font-size: 23px; }
+  .bb-masthead-center { display: none; }
+  .bb-masthead-meta { font-size: 12px; }
+  .bb-masthead-meta .bb-edition { font-size: 12px; }
+  .bb-ticker { font-size: 13px; line-height: 1.65; }
+  .bb-pills button { font-size: 13px; }
+  .bb-headline-mega { font-size: clamp(25px,6vw,31px); line-height: 1.65; }
+  .bb-headline-lg { font-size: 17px; line-height: 1.8; }
+  .bb-headline-md { font-size: 16px; line-height: 1.8; }
+  .bb-headline-sm { font-size: 14px; line-height: 1.75; }
+  .bb-lead { font-size: 14.5px; line-height: 1.9; }
+  .bb-kicker, .bb-page-ref, .bb-bottom-bar { font-size: 12px; }
+  .bb-tag, .bb-source-tag { font-size: 11.5px; }
+  .bb-celeb-strip a { font-size: 13px; }
+  .bb-series-card strong { font-size: 14px; }
+  .bb-horo-strip button, .bb-poll-options button { font-size: 13px; }
+  .bb-game-heading h2 { font-size: 22px; }
+  .bb-game-heading p { font-size: 14px; }
+}
