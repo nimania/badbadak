@@ -1,0 +1,170 @@
+{
+  "checked_at": "2026-10-26",
+  "sources": [
+    {
+      "name": "فیلیمو",
+      "url": "https://t.me/s/filimo",
+      "region": "iran"
+    },
+    {
+      "name": "فیلم‌نت",
+      "url": "https://t.me/s/filmnetofficial",
+      "region": "iran"
+    },
+    {
+      "name": "نماوا",
+      "url": "https://t.me/s/namava_ir",
+      "region": "iran",
+      "status": "رتبهٔ قابل تأیید موجود نیست"
+    }
+  ],
+  "items": [
+    {
+      "title": "East of Eden",
+      "platform": "Netflix",
+      "region": "world",
+      "rank": 1,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/netflix/",
+      "reason": "سریال تازه‌منتشرشده",
+      "release_date": "2026-10-01",
+      "release_source": "https://www.netflix.com/tudum/east-of-eden"
+    },
+    {
+      "title": "Monster: The Lizzie Borden Story",
+      "platform": "Netflix",
+      "region": "world",
+      "rank": 2,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/netflix/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Not a Stranger",
+      "platform": "Netflix",
+      "region": "world",
+      "rank": 3,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/netflix/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Neagley",
+      "platform": "Prime Video",
+      "region": "world",
+      "rank": 1,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/amazon-prime/",
+      "reason": "سریال تازه‌منتشرشده",
+      "release_date": "2026-09-16",
+      "release_source": "https://www.paramountpressexpress.com/paramount-television-studios/shows/neagley/releases"
+    },
+    {
+      "title": "Reacher",
+      "platform": "Prime Video",
+      "region": "world",
+      "rank": 2,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/amazon-prime/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Off Campus",
+      "platform": "Prime Video",
+      "region": "world",
+      "rank": 3,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/amazon-prime/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Coven Academy",
+      "platform": "Disney+",
+      "region": "world",
+      "rank": 1,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/disney/",
+      "reason": "سریال تازه‌منتشرشده",
+      "release_date": "2026-10-02",
+      "release_source": "https://thewaltdisneycompany.com/news/coven-academy-freeform-hulu-disney-plus/"
+    },
+    {
+      "title": "Loki",
+      "platform": "Disney+",
+      "region": "world",
+      "rank": 2,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/disney/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Africa Earth's Wild Home",
+      "platform": "Disney+",
+      "region": "world",
+      "rank": 3,
+      "checked_at": "2026-10-06",
+      "source_url": "https://flixpatrol.com/top10/disney/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Ted Lasso",
+      "platform": "Apple TV",
+      "region": "world",
+      "rank": 1,
+      "checked_at": "2026-10-05",
+      "source_url": "https://flixpatrol.com/top10/apple-tv/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Slow Horses",
+      "platform": "Apple TV",
+      "region": "world",
+      "rank": 2,
+      "checked_at": "2026-10-05",
+      "source_url": "https://flixpatrol.com/top10/apple-tv/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "Silo",
+      "platform": "Apple TV",
+      "region": "world",
+      "rank": 3,
+      "checked_at": "2026-10-05",
+      "source_url": "https://flixpatrol.com/top10/apple-tv/",
+      "reason": "رتبهٔ جهانی FlixPatrol"
+    },
+    {
+      "title": "سرخ و سیاه همین‌حالا به‌صورت اختصاصی در #فیلیمو 🧡 کارگردان:",
+      "platform": "فیلیمو",
+      "region": "iran",
+      "checked_at": "2026-10-20",
+      "published_at": "2026-10-16",
+      "release_date": "2026-10-16",
+      "source_url": "https://t.me/filimo/20444",
+      "reason": "اعلان تازه در کانال رسمی",
+      "poster_url": "https://cdn4.telesco.pe/file/W3rzWDEq6fvP2J4acmldUa2ltFqmjTedWQ1Kp4KmBA_h4_3C0z4lYHp-svS28v8GKBBHpvJAGIhl4c6dfJz8CO593rmkhVxyXPypif3MBToNcT8myNxSyq0m53y9HJViAQPzM8Sks6D4HidF3ThUGhx50t3O95zF1f8KQWZBZ4xPsSCLLSaZuppQud9YAyoQlQqu-SYqUMwXdyzJAxRQcvg9xs_SMpdFIWDyUGCWyQ0tfHWVc0AIAUp6-eDRLHnpNzwrS2fEZavKm-vQU3eA8t8oIP3xA_vthZeryFmzmV6O2F0CJlBA9n2D8l-76FY_yfTHptxWfT6OhQlq9a76Cw.jpg"
+    },
+    {
+      "title": "سرخ و سیاه در فیلیمو سریال «سرخ و سیاه",
+      "platform": "فیلیمو",
+      "region": "iran",
+      "checked_at": "2026-10-20",
+      "published_at": "2026-10-16",
+      "release_date": "2026-10-16",
+      "source_url": "https://t.me/filimo/20447",
+      "reason": "اعلان تازه در کانال رسمی",
+      "poster_url": null
+    },
+    {
+      "title": "یَلْ",
+      "platform": "فیلم‌نت",
+      "region": "iran",
+      "checked_at": "2026-10-23",
+      "published_at": "2026-10-09",
+      "release_date": "2026-10-09",
+      "source_url": "https://t.me/filmnetofficial/10900",
+      "reason": "اعلان تازه در کانال رسمی",
+      "poster_url": "https://cdn4.telesco.pe/file/Z67rvnwaYfpY11Dab7L2C-WFx9CWB2ILFoVqBThEtL4nbYFgAiICIgPUnSSdZlKzauS-WS4ypEIvfJLYhOTRGqT_kP-mbmjw5OXgUauydJ0AJ_KZfyGjhpN4gF0gFsLSg2DS-diMGYc3gP8Ha4nuSC0cu4Py_D3McmsYpCE6xAefbjlCM1tbJD9VUyvjMxSo5kM9tcSbXz7Wjo9CnWeOHXBbHVWCyxxkBQLh-EdJsC0ha04Yb4jDm6Ln53Fkk68miwgGyPGgZFC3Sq2vCkg0SWOngDhWHvMsMHpd3ZsV6m5kRPEQ_hEHFkJU46wErOBvOob-Th9pdMXHEXHVFK6nmA.jpg"
+    }
+  ]
+}
