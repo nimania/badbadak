@@ -555,3 +555,44 @@ main.wrap:has(#badbadak-view[style*="block"]) { max-width: 980px; }
 @media (prefers-reduced-motion: reduce) {
   #badbadak-view * { animation: none !important; scroll-behavior: auto !important; }
 }
+
+
+/* Bright, warm Badbadak palette */
+#badbadak-view {
+  --bb-yellow: #ffd64a;
+  --bb-yellow-bg: #ffe69a;
+  --bb-yellow-light: #fff3ce;
+  --bb-red: #e9655b;
+  --bb-blue: #279bb5;
+  --bb-border: #edc7a8;
+  --bb-border-heavy: #e8a76f;
+  --bb-cell-bg: #fffdf9;
+  --bb-cell-alt: #fff3e5;
+  --bb-dark-bg: #285e72;
+  --bb-dark-fg: #fffdf8;
+}
+#badbadak-view :focus-visible { outline-color: #2aa3ad; }
+.bb-masthead {
+  background: linear-gradient(110deg, #ed6d5d 0%, #f3a543 100%);
+}
+.bb-masthead-meta { color: rgba(255,255,255,.86); }
+.bb-masthead-meta .bb-edition { color: #fff2ad; }
+.bb-ticker { background: #df6256; }
+.bb-pills { background: #fffaf3; }
+.bb-pills button {
+  border-radius: 999px;
+  border-color: #efc7a3;
+  background: #fffdf9;
+}
+.bb-pills button[aria-pressed=true] {
+  background: #ffd64a;
+  border-color: #ffd64a;
+}
+.bb-cell-dark:hover { background: #34768a !important; }
+.bb-tag { background: #e7f4f4; color: #285e72; }
+.bb-tag-hot { background: #e9655b; color: #fff; }
+.bb-tag-yellow { background: #ffe69a; color: #263247; }
+.bb-source-tag { background: #279bb5; }
+.bb-celeb-strip img { border-color: #f3a543; }
+.bb-game-card { background: #ffd64a; }
+.bb-bottom-bar { background: #285e72; }
