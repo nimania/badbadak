@@ -22,7 +22,7 @@ from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 import xml.etree.ElementTree as ET
 
-UA = "Mozilla/5.0 (compatible; Badbadak/1.0; +https://pendar.io/badbadak/)"
+UA = "Mozilla/5.0 (compatible; Badbadak/1.0; +https://github.com/nimania/badbadak)"
 SITE = "https://7sobh.com"
 RSS_PATHS = ["/feed/", "/rss", "/fa/rss", "/fa/rss/allnews"]
 MAX_ITEMS = 30
