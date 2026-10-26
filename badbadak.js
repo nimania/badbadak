@@ -68,7 +68,7 @@ function bbPersianDate(){
 }
 
 /* === SHOW / LOAD === */
-function showBadbadak(){_bbPage='home';show('badbadak');setTab('');setHash('#/badbadak');document.title='بادبادک | چهره‌ها، سبک زندگی و سرگرمی | پندار';return renderBadbadak();}
+function showBadbadak(){_bbPage='home';show('badbadak');setTab('');setHash('#/badbadak');document.title='بادبادک | چهره‌ها، سبک زندگی و سرگرمی';return renderBadbadak();}
 
 async function renderBadbadak(){
  if(_badbadakLoaded){bbRender();return;}
@@ -161,7 +161,7 @@ function bbRender(){
    </div>
    <div class="bb-masthead-center">چهره‌ها · سبک زندگی · سرگرمی</div>
    <div class="bb-masthead-meta">
-    <span class="bb-edition">ضمیمهٔ پندار</span>
+    <span class="bb-edition">نسخهٔ امروز</span>
     <span>${bbPersianDate()}</span>
    </div>
   </div>
@@ -312,7 +312,7 @@ function bbRender(){
 
   <!-- BOTTOM BAR -->
   <div class="bb-bottom-bar">
-   <div><a href="/badbadak/">بادبادک</a> — ضمیمهٔ <a href="/">پندار</a></div>
+   <div><a href="/badbadak/">بادبادک</a> — رسانهٔ مستقل</div>
    <div style="opacity:0.6;">چهره‌ها · سبک زندگی · سرگرمی · پیشخوان کتاب · جان‌فیلم · راهنمای تماشا</div>
   </div>
  </div>`;
@@ -348,6 +348,6 @@ function bbSeriesSection(){
 
 /* === CROSSWORD === */
 function showBadbadakCrossword(){
- _bbPage='crossword';show('badbadak');setTab('');setHash('#/badbadak/crossword');document.title='جدول کلمات متقاطع | بادبادک | پندار';
+ _bbPage='crossword';show('badbadak');setTab('');setHash('#/badbadak/crossword');document.title='جدول کلمات متقاطع | بادبادک';
  document.getElementById('badbadak-content').innerHTML='<div class="bb-newspaper"><div class="bb-masthead"><div class="bb-masthead-logo"><img src="assets/badbadak-logo.png" alt="" width="36" height="36"> بادبادک</div><div class="bb-masthead-center">جدول کلمات متقاطع</div><div class="bb-masthead-meta"><a href="/badbadak/" style="color:var(--bb-yellow);">بازگشت</a></div></div><div class="bb-crossword"><div class="bb-game-heading"><div><h2>جدول کلمات متقاطع</h2><p>یک جدول انتخاب کن و شروع کن.</p></div></div><iframe title="بازی جدول کلمات فارسی" src="https://blankuapp.github.io/PersianCrossword/" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe><p style="font-size:.82rem;color:var(--ink-soft);padding:8px 0;"><a href="https://blankuapp.github.io/PersianCrossword/" target="_blank" rel="noopener">نمای تمام‌صفحه</a> · جدول کلمات فارسی</p></div></div>';
 }
