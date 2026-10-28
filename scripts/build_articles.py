@@ -62,7 +62,17 @@ def parse_article(raw, url):
         player_url = safe_url(player.get('src'), url) if player else ''
         if player_url and urlparse(player_url).hostname in {'mcdn.rokna.net'}:
             description = soup.select_one('meta[property="og:description"]')
-            blocks = [{'type': 'video', 'url': player_url, 'text': title}]
+            media_url = player_url
+            try:
+                player_raw, _, _ = fetch_url(player_url)
+                player_soup = BeautifulSoup(player_raw, 'html.parser')
+                source = player_soup.select_one('video source[src]')
+                direct = safe_url(source.get('src'), player_url) if source else ''
+                if urlparse(direct).hostname == 'mcdn.rokna.net' and urlparse(direct).path.lower().endswith('.mp4'):
+                    media_url = direct
+            except Exception:
+                pass
+            blocks = [{'type': 'video', 'url': media_url, 'player_url': player_url, 'text': title}]
             if description and description.get('content'):
                 blocks.insert(0, {'type': 'paragraph', 'text': description['content']})
             return title, hero, blocks
@@ -156,7 +166,14 @@ def build_page(row):
         if block['type'] == 'video':
             u = safe_url(block.get('url'))
             if urlparse(u).hostname == 'mcdn.rokna.net':
-                paragraphs.append('<iframe class="bb-article-video" style="display:block;width:100%;height:min(70vh,650px);border:0;margin:24px 0" title="' + escape(block.get('text', 'ویدئوی خبر'), quote=True) + '" src="' + escape(u, quote=True) + '" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')
+                if urlparse(u).path.lower().endswith('.mp4'):
+                    poster = safe_url(row.get('image'))
+                    poster_attr = ' poster="' + escape(poster, quote=True) + '"' if poster else ''
+                    paragraphs.append('<video class="bb-article-video" controls playsinline preload="metadata" style="display:block;width:100%;max-height:70vh;background:#111;border-radius:8px;margin:24px 0;object-fit:contain"' + poster_attr + '><source src="' + escape(u, quote=True) + '" type="video/mp4">مرورگر شما پخش این ویدئو را پشتیبانی نمی‌کند.</video>')
+                else:
+                    paragraphs.append('<iframe class="bb-article-video" style="display:block;width:100%;height:min(70vh,650px);border:0;margin:24px 0" title="' + escape(block.get('text', 'ویدئوی خبر'), quote=True) + '" src="' + escape(u, quote=True) + '" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')
+                fallback = safe_url(block.get('player_url') or u)
+                paragraphs.append('<p class="bb-video-fallback"><a href="' + escape(fallback, quote=True) + '" target="_blank" rel="noopener noreferrer">اگر پخش نشد، ویدئو را در منبع باز کنید ↗</a></p>')
         elif block['type'] == 'image':
             u = safe_url(block.get('url'))
             if u and image_key(u) not in seen_images:
