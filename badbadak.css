@@ -15,29 +15,98 @@
 
 .bb-video-summary{margin:24px 0;padding:18px 20px;background:#f5f7f4;border:1px solid #e2e7e0;border-radius:8px}.bb-video-summary h2{font-size:18px;margin:0 0 8px}.bb-video-summary p{font-size:16px;line-height:2;margin:0}.bb-video-summary small{display:block;margin-top:10px;color:#68716b}.bb-article-hero{max-height:65vh;object-fit:contain}.bb-article-body figure img{max-height:80vh;object-fit:contain}
 
-/* Warm editorial color, keeping the compact reading layout. */
-html body{background:#f1ede4;color:#243a2c}
-#badbadak-view{--ink:#243a2c;--ink-soft:#626b61;--surface:#fffefb;--surface-2:#f4f2e8;--line-strong:#e5e2d4}
-.bb-newspaper{background:#fffefb;box-shadow:0 0 0 1px #e8e1d4;min-height:100vh}
-.bb-masthead{background:#285347;color:#fffaf0;margin-inline:-28px;padding:26px 28px;border-bottom:4px solid #d9b36f}
-.bb-masthead-center,.bb-masthead-meta{color:#e0e9df}
-.bb-brand-dot{background:#e7bd76;width:9px;height:9px}
-#badbadak-view .bb-masthead a{color:#fffaf0}
-.bb-pills{border-bottom-color:#dedfc9;padding-block:18px}
-.bb-pills button{color:#52624c}
-.bb-pills button[aria-pressed=true]{background:#dfe9cc;color:#2d4d2e;box-shadow:inset 0 -2px #6d8a4c}
-.bb-pills button:hover{background:#f0edda}
-.bb-news-featured{background:#f2f3e3;border:1px solid #dfe3c9;border-inline-start:4px solid #78935a;border-radius:10px;padding:22px;margin:22px 0 4px}
-.bb-kicker{display:inline-block;background:#f4e5d8;color:#91462d;border-radius:5px;padding:2px 8px;margin-bottom:8px}
-.bb-news-featured .bb-kicker{background:#dfe8cc;color:#39562f}
-.bb-news-item:hover .bb-headline-lg{color:#91462d}
-.bb-source-tag{color:#526b43}
-.bb-footer-links{color:#375b45;border-top:2px solid #d8dfc2;margin-top:12px}
-.bb-footer-links a{background:#edf1e2;border-radius:5px;padding:4px 9px}
-.bb-article-source{display:inline-block;background:#e8efdc;color:#385d37;border-radius:6px;padding:5px 12px}
-.bb-article-body h2{color:#375c42}
-.bb-video-summary,.bb-related-books{background:#f4f1e4;border:1px solid #dedbbf;border-inline-start:4px solid #a65a3c;border-radius:8px}
+/* Badbadak edition: blue and orange palette supplied by the publisher.
+   Keep the original transparent kite logo on a light masthead. */
+html body{background:#eef1f7;color:#26304d}
+#badbadak-view{
+ --bb-blue:#3e559b;--bb-blue-deep:#2c437f;--bb-orange:#d56741;
+ --bb-orange-ink:#a13f22;--bb-red:#d54747;
+ --ink:#26304d;--ink-soft:#636c80;--surface:#fff;
+ --surface-2:#f5f7fc;--line-strong:#e0e5f0;
+}
+.bb-newspaper{background:#fff;box-shadow:0 0 0 1px #dce2ed;min-height:100vh}
+.bb-masthead{
+ position:relative;background:linear-gradient(115deg,#fff 0%,#f9faff 60%,#f0f3fb 100%);
+ color:var(--ink);margin-inline:-28px;padding:17px 28px 20px;
+ border-top:7px solid var(--bb-blue);border-bottom:4px solid var(--bb-orange);
+ align-items:center;gap:18px;
+}
+.bb-masthead-brand{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+#badbadak-view .bb-masthead-logo{
+ display:inline-flex;align-items:center;justify-content:center;line-height:1;
+ padding:0;margin:0;border:0;background:transparent;color:var(--ink);
+}
+.bb-brand-image{display:block;width:175px;height:auto;max-width:100%;object-fit:contain}
+.bb-masthead-center{margin:0;color:var(--bb-blue-deep);font-size:13px;font-weight:600;letter-spacing:0}
+.bb-masthead-meta{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;text-align:center;color:var(--ink-soft);font-size:12px}
+.bb-date-ribbon{
+ position:relative;display:inline-block;direction:rtl;isolation:isolate;
+ color:#fff;background:var(--bb-red);padding:12px 20px 12px 24px;
+ font-size:clamp(14px,1.7vw,20px);font-weight:800;line-height:1.6;
+ white-space:nowrap;box-shadow:0 4px 0 rgba(63,75,111,.10);
+}
+.bb-date-ribbon::after{
+ content:"";position:absolute;top:100%;left:0;
+ width:0;height:0;border-top:13px solid #a81920;
+ border-right:13px solid transparent;
+}
+.bb-latest-time{font-size:11px;color:#69758b;line-height:1.6}
+.bb-back-link{color:var(--bb-blue-deep)!important;font-weight:700;text-decoration:underline!important;text-underline-offset:4px}
+.bb-pills{padding:16px 0;border-bottom:2px solid #e4e8f1;gap:6px}
+.bb-pills button{color:#455579;background:transparent;border-radius:5px 5px 0 0;transition:background-color .15s,color .15s}
+.bb-pills button[aria-pressed=true]{background:#edf1fc;color:var(--bb-blue-deep);font-weight:800;box-shadow:inset 0 -3px var(--bb-orange)}
+.bb-pills button:hover{background:#fceee8;color:var(--bb-orange-ink)}
+.bb-news-list{gap:0 30px}
+.bb-news-item{border-bottom:1px solid var(--line-strong)}
+.bb-news-featured{
+ background:linear-gradient(120deg,#eef2fd,#fbfcff);
+ border:1px solid #d8e0f1;border-inline-start:5px solid var(--bb-orange);
+ border-radius:8px;padding:22px;margin:22px 0 4px;
+}
+.bb-news-featured .bb-headline-lg{color:var(--bb-blue-deep);font-size:26px}
+.bb-news-image{background:#edf1f9}
+.bb-headline-lg{color:var(--bb-blue-deep);line-height:1.75;font-weight:800;transition:color .15s}
+.bb-news-item:nth-child(3n+2):not(.bb-news-featured) .bb-headline-lg{color:var(--bb-orange-ink)}
+.bb-news-item:hover .bb-headline-lg,
+.bb-news-item:nth-child(3n+2):hover .bb-headline-lg{color:var(--bb-orange)}
+.bb-kicker{
+ display:inline-block;background:#fdf0e9;color:var(--bb-orange-ink);
+ border-inline-start:3px solid var(--bb-orange);border-radius:3px;
+ font-weight:700;padding:2px 9px;margin-bottom:8px;
+}
+.bb-news-featured .bb-kicker{background:#e0e8fa;color:var(--bb-blue-deep);border-inline-start-color:var(--bb-blue)}
+.bb-lead{color:#596377}
+.bb-news-meta{color:#737e90}
+.bb-source-tag{color:var(--bb-blue);font-weight:600}
+.bb-footer-links{border-top:2px solid #dce3f3;margin-top:14px;color:var(--bb-blue-deep)}
+.bb-footer-links a{background:#eef2fc;border-radius:5px;padding:4px 10px}
+.bb-footer-links a:hover{background:#fdeee7;color:var(--bb-orange-ink)}
+.bb-article-source{display:inline-block;background:#edf2fe;color:var(--bb-blue-deep);border-radius:5px;padding:5px 12px}
+.bb-article-body h2{color:var(--bb-blue-deep);border-inline-start:4px solid var(--bb-orange);padding-inline-start:12px}
+.bb-article-footer{border-top-color:var(--line-strong)}
+.bb-article-notice{background:#f5f7fc;border-color:#e0e5f0}
+.bb-video-summary,.bb-related-books{
+ background:#f4f6fc;border:1px solid #d9e2f2;
+ border-inline-start:4px solid var(--bb-orange);border-radius:8px;
+}
 .bb-related-books{padding:16px 22px;margin-top:28px}
-#badbadak-view .bb-related-books a{color:#395d36;text-decoration:underline;text-underline-offset:4px}
-#badbadak-view :focus-visible{outline-color:#a65a3c}
-@media(max-width:700px){.bb-masthead{margin-inline:-16px;padding:22px 16px}.bb-news-featured{padding:18px;margin-top:18px}.bb-footer-links{gap:12px}}
+#badbadak-view .bb-related-books a{color:var(--bb-blue-deep);text-decoration:underline;text-underline-offset:4px}
+#badbadak-view :focus-visible{outline-color:var(--bb-orange)}
+@media(max-width:700px){
+ .bb-masthead{margin-inline:-16px;padding:15px 16px 17px;gap:12px}
+ .bb-brand-image{width:148px}
+ .bb-masthead-center{font-size:11px}
+ .bb-date-ribbon{font-size:13px;padding:10px 12px}
+ .bb-latest-time{font-size:10px}
+ .bb-news-featured{padding:18px;margin-top:18px}
+ .bb-news-featured .bb-headline-lg{font-size:22px}
+ .bb-footer-links{gap:12px}
+}
+@media(max-width:480px){
+ .bb-masthead{flex-direction:column;align-items:stretch;gap:4px}
+ .bb-masthead-brand{align-items:flex-start}
+ .bb-masthead-meta{align-items:flex-end;gap:7px}
+ .bb-date-ribbon{font-size:14px}
+ .bb-masthead-center{margin-top:-2px}
+}
+@media(prefers-reduced-motion:reduce){.bb-headline-lg,.bb-pills button{transition:none}}

@@ -61,8 +61,9 @@ function bbImageError(img){
 function bbPersianDate(){
  try {
   const d=new Date();
-  const f=new Intl.DateTimeFormat('fa-IR',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Tehran'});
-  return f.format(d);
+  const weekday=new Intl.DateTimeFormat('fa-IR',{weekday:'long',timeZone:'Asia/Tehran'}).format(d);
+  const date=new Intl.DateTimeFormat('fa-IR',{year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Tehran'}).format(d);
+  return `${weekday} – ${date}`;
  } catch(_) { return ''; }
 }
 
@@ -151,7 +152,7 @@ function bbRender(){
  const dated=combined.map(st=>Date.parse(st.published_at)).filter(Number.isFinite);
  const latest=dated.length?new Intl.DateTimeFormat('fa-IR',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Tehran'}).format(new Date(Math.max(...dated))):'';
  document.getElementById('badbadak-content').innerHTML=`<div class="bb-newspaper">
- <header class="bb-masthead"><div><a class="bb-masthead-logo" href="./">بادبادک<span class="bb-brand-dot" aria-hidden="true"></span></a><p class="bb-masthead-center">چهره‌ها، سبک زندگی و سرگرمی</p></div><div class="bb-masthead-meta"><span>${bbPersianDate()}</span>${latest?`<span>تازه‌ترین خبر: ${esc(latest)}</span>`:''}</div></header>
+ <header class="bb-masthead"><div class="bb-masthead-brand"><a class="bb-masthead-logo" href="./" aria-label="بادبادک، صفحهٔ اصلی"><img class="bb-brand-image" src="./assets/badbadak-logo.png" width="183" height="87" alt="بادبادک"></a><p class="bb-masthead-center">چهره‌ها، سبک زندگی و سرگرمی</p></div><div class="bb-masthead-meta"><time class="bb-date-ribbon">${bbPersianDate()}</time>${latest?`<span class="bb-latest-time">تازه‌ترین خبر: ${esc(latest)}</span>`:""}</div></header>
  <nav class="bb-pills" aria-label="موضوع خبرها">${BB_CATEGORIES.filter(([k])=>k==='all'||combined.some(st=>bbCategory(st)===k)).map(([k,label])=>`<button type="button" aria-pressed="${k===_bbCategory}" onclick="bbFilter('${k}')">${label}</button>`).join('')}</nav>
  <section class="bb-news-list" aria-label="تازه‌ترین خبرها">${stories.length?stories.map((st,i)=>`<article class="bb-news-item${i===0?' bb-news-featured':''}">${bbCellLink(st,`${bbImgTag(st,'bb-news-image',i===0?'fetchpriority="high"':'')}<div class="bb-news-copy"><div class="bb-kicker">${esc(bbLabel(bbCategory(st)))}</div><h2 class="bb-headline-lg">${esc(bbHeadline(st))}</h2>${st.summary_fa?`<p class="bb-lead">${esc(st.summary_fa.slice(0,i===0?220:130))}</p>`:''}<div class="bb-news-meta">${bbSourceTag(st)}${st.published_at&&Number.isFinite(Date.parse(st.published_at))?`<time datetime="${esc(st.published_at)}">${esc(new Intl.DateTimeFormat('fa-IR',{day:'numeric',month:'short',timeZone:'Asia/Tehran'}).format(new Date(st.published_at)))}</time>`:''}</div></div>`)}</article>`).join(''):'<p class="state">خبری برای این موضوع در دسترس نیست.</p>'}</section>
  <nav class="bb-footer-links" aria-label="پیوندهای دیگر"><a href="https://pendar.io/">پندار</a><a href="https://nimania.github.io/jan-kalam/">جان‌کلام</a><a href="#/crossword">جدول کلمات</a></nav></div>`;
@@ -160,5 +161,6 @@ function bbRender(){
 /* === CROSSWORD === */
 function showBadbadakCrossword(){
  _bbPage='crossword';show('badbadak');setTab('');setHash('#/badbadak/crossword');document.title='جدول کلمات متقاطع | بادبادک';
- document.getElementById('badbadak-content').innerHTML='<div class="bb-newspaper"><div class="bb-masthead"><div class="bb-masthead-logo"> بادبادک</div><div class="bb-masthead-center">جدول کلمات متقاطع</div><div class="bb-masthead-meta"><a href="./">بازگشت</a></div></div><div class="bb-crossword"><div class="bb-game-heading"><div><h2>جدول کلمات متقاطع</h2><p>یک جدول انتخاب کن و شروع کن.</p></div></div><iframe title="بازی جدول کلمات فارسی" src="https://blankuapp.github.io/PersianCrossword/" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe><p style="font-size:.82rem;color:var(--ink-soft);padding:8px 0;"><a href="https://blankuapp.github.io/PersianCrossword/" target="_blank" rel="noopener">نمای تمام‌صفحه</a> · جدول کلمات فارسی</p></div></div>';
+ document.getElementById('badbadak-content').innerHTML='<div class="bb-newspaper"><header class="bb-masthead"><div class="bb-masthead-brand"><a class="bb-masthead-logo" href="./" aria-label="بادبادک، صفحهٔ اصلی"><img class="bb-brand-image" src="./assets/badbadak-logo.png" width="183" height="87" alt="بادبادک"></a><p class="bb-masthead-center">جدول کلمات متقاطع</p></div><div class="bb-masthead-meta"><time class="bb-date-ribbon" id="bb-crossword-date"></time><a class="bb-back-link" href="./">بازگشت به خبرها</a></div></header><div class="bb-crossword"><div class="bb-game-heading"><div><h2>جدول کلمات متقاطع</h2><p>یک جدول انتخاب کن و شروع کن.</p></div></div><iframe title="بازی جدول کلمات فارسی" src="https://blankuapp.github.io/PersianCrossword/" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe><p style="font-size:.82rem;color:var(--ink-soft);padding:8px 0;"><a href="https://blankuapp.github.io/PersianCrossword/" target="_blank" rel="noopener">نمای تمام‌صفحه</a> · جدول کلمات فارسی</p></div></div>';
+ document.getElementById('bb-crossword-date').textContent=bbPersianDate();
 }
