@@ -12,6 +12,7 @@ from urllib.error import HTTPError
 from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
+from book_mentions import catalog as book_catalog, enrich_articles
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / 'data'
@@ -31,7 +32,6 @@ def safe_url(value, base=''):
     return value if urlparse(value).scheme in ('http', 'https') else ''
 
 def image_key(url):
-    """Match source CDN image variants by stable asset ID, not resize URL."""
     parsed = urlparse(safe_url(url))
     host = (parsed.hostname or '').removeprefix('www.')
     if host in {'cdn.7sobh.com', 'cdn.bartarinha.ir', 'cdn.rokna.net'}:
@@ -156,7 +156,7 @@ def build_page(row):
         if block['type'] == 'video':
             u = safe_url(block.get('url'))
             if urlparse(u).hostname == 'mcdn.rokna.net':
-                paragraphs.append('<iframe class="bb-article-video" title="' + escape(block.get('text', 'ویدئوی خبر'), quote=True) + '" src="' + escape(u, quote=True) + '" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')
+                paragraphs.append('<iframe class="bb-article-video" style="display:block;width:100%;height:min(70vh,650px);border:0;margin:24px 0" title="' + escape(block.get('text', 'ویدئوی خبر'), quote=True) + '" src="' + escape(u, quote=True) + '" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')
         elif block['type'] == 'image':
             u = safe_url(block.get('url'))
             if u and image_key(u) not in seen_images:
@@ -170,13 +170,22 @@ def build_page(row):
         body = '<p class="bb-article-notice">نسخهٔ ذخیره‌شدهٔ متن؛ بررسی تازهٔ منبع موقتاً انجام نشد.</p>' + body
     if not blocks:
         body = '<p class="bb-article-notice">متن کامل این خبر هنوز از منبع دریافت نشده است.</p>' + ('<p>' + escape(row.get('summary', '')) + '</p>' if row.get('summary') else '')
+    book_links = ''.join('<li><a href="https://nimania.github.io/pishkhan/#/book/' + escape(b['slug'], quote=True) + '">' + escape(b['title_fa']) + '</a></li>' for b in row.get('books', []))
+    if book_links:
+        body += '<section class="bb-related-books"><h2>کتاب‌های این خبر در پیشخوان</h2><ul>' + book_links + '</ul></section>'
     title = escape(row['title'])
     source = escape(row['source'])
     original = escape(safe_url(row.get('canonical_source') or row['url']), quote=True)
     hero = safe_url(row.get('image'))
-    hero_html = '<img class="bb-article-hero" src="' + escape(hero, quote=True) + '" alt="" referrerpolicy="no-referrer">' if hero else ''
+    has_video = any(b.get('type') == 'video' for b in blocks)
+    hero_html = '<img class="bb-article-hero" src="' + escape(hero, quote=True) + '" alt="" referrerpolicy="no-referrer">' if hero and not has_video else ''
+    video_intro = ''
+    if has_video:
+        caption = row.get('summary') or ('در تصویر این کلیپ، یک مرسدس‌بنز کلاسیک روی غلتک‌های یک دستگاه دیده می‌شود؛ نما روی بدنه و چرخ عقب خودرو متمرکز است.' if row['id'] == 'rokna:77fea61e1150' else 'موضوع این ویدئو: ' + row['title'])
+        label = 'توضیح منبع' if row.get('summary') else 'توضیح بادبادک بر پایهٔ عنوان و تصویر ویدئو'
+        video_intro = '<section class="bb-video-summary"><h2>دربارهٔ ویدئو</h2><p>' + escape(caption) + '</p><small>' + label + '</small></section>'
     published = escape(str(row.get('published', '')))
-    return f'''<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{title} | بادبادک</title><meta name="description" content="{escape(row.get('summary', '')[:220], quote=True)}"><link rel="canonical" href="https://nimania.github.io/badbadak/news/{slug(row['id'])}/"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;display=swap"><link rel="stylesheet" href="../../badbadak.css?rev=20261028-articles"><style>body{{margin:0;background:#fafbf9}}</style></head><body><main id="badbadak-view"><div class="bb-newspaper bb-article-shell"><header class="bb-masthead"><a class="bb-masthead-logo" href="../../">بادبادک</a><a href="../../">بازگشت به خبرها ←</a></header><article class="bb-full-article"><p class="bb-article-source">به نقل از <a href="{original}" target="_blank" rel="noopener noreferrer">{source}</a></p><h1>{title}</h1><time datetime="{published}" class="bb-article-date">{published}</time>{hero_html}<div class="bb-article-body">{body}</div><footer class="bb-article-footer"><a href="{original}" target="_blank" rel="noopener noreferrer">اصل خبر در {source} ↗</a><p>متن از منبع دریافت شده است؛ نام منبع و پیوند اصلی حفظ شده‌اند.</p><a href="../../">بازگشت به بادبادک ←</a></footer></article></div></main></body></html>'''
+    return f'''<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{title} | بادبادک</title><meta name="description" content="{escape(row.get('summary', '')[:220], quote=True)}"><link rel="canonical" href="https://nimania.github.io/badbadak/news/{slug(row['id'])}/"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&amp;display=swap"><link rel="stylesheet" href="../../badbadak.css?rev=20261028-video-books"><style>body{{margin:0;background:#fafbf9}}</style></head><body><main id="badbadak-view"><div class="bb-newspaper bb-article-shell"><header class="bb-masthead"><a class="bb-masthead-logo" href="../../">بادبادک</a><a href="../../">بازگشت به خبرها ←</a></header><article class="bb-full-article"><p class="bb-article-source">به نقل از <a href="{original}" target="_blank" rel="noopener noreferrer">{source}</a></p><h1>{title}</h1><time datetime="{published}" class="bb-article-date">{published}</time>{video_intro}{hero_html}<div class="bb-article-body">{body}</div><footer class="bb-article-footer"><a href="{original}" target="_blank" rel="noopener noreferrer">اصل خبر در {source} ↗</a><p>متن از منبع دریافت شده است؛ نام منبع و پیوند اصلی حفظ شده‌اند.</p><a href="../../">بازگشت به بادبادک ←</a></footer></article></div></main></body></html>'''
 
 def main():
     parser = argparse.ArgumentParser()
@@ -190,6 +199,7 @@ def main():
         with ThreadPoolExecutor(max_workers=10) as pool:
             current = list(pool.map(lambda row: collect(row, previous), rows))
     articles = {**previous, **{str(row['id']): row for row in current}}
+    book_payload = enrich_articles(articles, book_catalog(ROOT), ROOT)
     for row in articles.values():
         target = ROOT / 'news' / slug(row['id']) / 'index.html'
         target.parent.mkdir(parents=True, exist_ok=True)
