@@ -30,6 +30,16 @@ def safe_url(value, base=''):
     value = urljoin(base, value or '')
     return value if urlparse(value).scheme in ('http', 'https') else ''
 
+def image_key(url):
+    """Match source CDN image variants by stable asset ID, not resize URL."""
+    parsed = urlparse(safe_url(url))
+    host = (parsed.hostname or '').removeprefix('www.')
+    if host in {'cdn.7sobh.com', 'cdn.bartarinha.ir', 'cdn.rokna.net'}:
+        match = re.search(r'/(?:thumbnail|servev2|serve)/([^/]+)/', parsed.path)
+        if match:
+            return (host, match.group(1))
+    return (host, parsed.path, parsed.query)
+
 def fetch_url(url):
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; Badbadak/1.0)', 'Accept': 'text/html,application/json'})
     with urlopen(req, timeout=18) as response:
@@ -60,12 +70,12 @@ def parse_article(raw, url):
     for node in container.select(REMOVE):
         node.decompose()
     blocks = []
-    seen_images = {hero} if hero else set()
+    seen_images = {image_key(hero)} if hero else set()
     for node in container.find_all(['p', 'h2', 'h3', 'h4', 'li', 'blockquote', 'img']):
         if node.name == 'img':
             src = safe_url(node.get('data-src') or node.get('src'), url)
-            if src and src not in seen_images:
-                seen_images.add(src)
+            if src and image_key(src) not in seen_images:
+                seen_images.add(image_key(src))
                 blocks.append({'type': 'image', 'url': src, 'text': text(node.get('alt'))})
             continue
         # Emit parent block only once, preserving text and its original order.
@@ -141,6 +151,7 @@ def collect(row, previous):
 def build_page(row):
     blocks = row.get('blocks', [])
     paragraphs = []
+    seen_images = {image_key(row['image'])} if row.get('image') else set()
     for block in blocks:
         if block['type'] == 'video':
             u = safe_url(block.get('url'))
@@ -148,7 +159,8 @@ def build_page(row):
                 paragraphs.append('<iframe class="bb-article-video" title="' + escape(block.get('text', 'ویدئوی خبر'), quote=True) + '" src="' + escape(u, quote=True) + '" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')
         elif block['type'] == 'image':
             u = safe_url(block.get('url'))
-            if u:
+            if u and image_key(u) not in seen_images:
+                seen_images.add(image_key(u))
                 paragraphs.append('<figure><img src="' + escape(u, quote=True) + '" alt="' + escape(block.get('text', ''), quote=True) + '" loading="lazy" referrerpolicy="no-referrer"></figure>')
         else:
             tag = 'h2' if block['type'] == 'heading' else 'p'
