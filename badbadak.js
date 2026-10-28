@@ -3,11 +3,10 @@ const BB_CATEGORIES = [ ['all','همه'], ['celeb','سلبریتی'], ['turkish'
 let _badbadakLoaded=false, _bbLoading=null, _bbStories=[], _bbPeople=[], _bbTrends=[], _bbCategory='all', _bbMeshkiNews=[], _bbBartarinha=[], _bbRokna=[], _bb7sobh=[], _bbSeries=[], _bbPage='home';
 
 function bbCategory(s){
- if(s.bb_category)return s.bb_category;
  const t=s.headline_fa||s.title_fa||s.title||'';
  if(/نفتکش|سپاه|موشک|حمله نظامی|تنگه هرمز|غزه|جنگ|سفیر|دیپلمات|وزیر|رئیس‌جمهور|جاسوسی|تروریست|پایگاه نظامی|ناتو/.test(t)&&!/بازیگر|خواننده|هنرمند/.test(t))return null;
  for(const [key,re] of [['celeb',/بازیگر|خواننده|سینما|سریال|هنرمند|کنسرت|سلبریتی|جشنواره.*فیلم|منوچهر هادی|یکتا ناصر/],['beauty',/آرایش|زیبایی|پوست(?:\s|$)|موهای|مراقبت.*مو/],['food',/خوراک|غذا|رستوران|آشپزی|تغذیه|قهوه|شیرینی/],['style',/پوشاک|لباس|استایل|فشن|طراح.*مد/],['health',/سلامت|پزشکی|بیماری|درمان|بهداشت|طاعون/],['travel',/گردشگری|هتل|مقصد.*سفر/],['tech',/فناوری|هوش مصنوعی|تکنولوژی|گجت|آیفون/],['buzz',/حادثه|تصادف|آتش.سوزی|جنجال|حاشیه|قتل|شهربازی/]])if(re.test(t))return key;
- return null;
+ return s.bb_category||null;
 }
 function bbLabel(k){return BB_CATEGORIES.find(c=>c[0]===k)?.[1]||'تازه‌ها';}
 function bbSafeImage(u){return typeof u==='string'&&(/^(https?:\/\/|assets\/)/.test(u))?u:'';}
@@ -144,210 +143,22 @@ function bbNumberedItem(s, num){
 /* === MAIN RENDER === */
 function bbRender(){
  if(_bbPage!=='home')return;
- const _extNews=[..._bbMeshkiNews,..._bbBartarinha,..._bbRokna,..._bb7sobh].sort((a,b)=>String(b.published_at||'').localeCompare(String(a.published_at||'')));
- const combined=_bbStories.flatMap((s,i)=>_extNews[i]?[s,_extNews[i]]:[s]).concat(_extNews.slice(_bbStories.length));
- const stories=combined.filter(s=>_bbCategory==='all'||bbCategory(s)===_bbCategory);
- const hero=stories[0];
- const popular=[...stories].sort((a,b)=>(b.source_count||0)-(a.source_count||0)).slice(0,5);
- const s=stories; // shorthand
-
- document.getElementById('badbadak-content').innerHTML=`
- <div class="bb-newspaper">
-  <!-- MASTHEAD -->
-  <div class="bb-masthead">
-   <div class="bb-masthead-logo">
-    
-    بادبادک
-   </div>
-   <div class="bb-masthead-center">چهره‌ها · سبک زندگی · سرگرمی</div>
-   <div class="bb-masthead-meta">
-    <span class="bb-edition">نسخهٔ امروز</span>
-    <span>${bbPersianDate()}</span>
-   </div>
-  </div>
-
-  <!-- TICKER -->
-  ${hero?`<div class="bb-ticker">
-   <span>🔥 ${esc(bbHeadline(hero))}</span>
-   ${s[1]?`<span>${esc(bbHeadline(s[1]))}</span>`:''}
-   ${s[2]?`<span>${esc(bbHeadline(s[2]))}</span>`:''}
-  </div>`:''}
-
-  <!-- PILLS -->
-  <div class="bb-pills" role="group" aria-label="موضوع خبرها">${BB_CATEGORIES.map(([k,label])=>`<button type="button" aria-pressed="${k===_bbCategory}" onclick="bbFilter('${k}')">${label}</button>`).join('')}</div>
-
-  ${_bbPeople.length?`<div class="bb-celeb-strip">${_bbPeople.map(p=>`<a href="${esc(p.bbURL)}"><img src="${esc(p.avatar)}" alt="" loading="lazy" onerror="this.hidden=true"><span>${esc(p.name_fa)}</span></a>`).join('')}</div>`:''}
-
-  <!-- ROW 1: HERO + SIDEBAR -->
-  ${hero?`<div class="bb-grid">
-   <div class="bb-cell bb-cell-hero bb-cell-yellow">
-    ${bbCellLink(hero, `
-     <div class="bb-kicker">${esc(bbLabel(bbCategory(hero)))} · گزارش ویژه</div>
-     <h1 class="bb-headline-mega">${esc(bbHeadline(hero))}</h1>
-     ${bbSourceTag(hero)}
-     ${hero.summary_fa?`<p class="bb-lead">${esc(hero.summary_fa.slice(0,200))}</p>`:''}
-     ${bbImgTag(hero, 'bb-photo bb-photo-wide', 'fetchpriority="high"')}
-    `)}
-   </div>
-   ${s[1]?`<div class="bb-cell bb-cell-side-top">
-    ${bbCellLink(s[1], `
-     <span class="bb-tag bb-tag-hot">${esc(bbLabel(bbCategory(s[1])))}</span>
-     <h2 class="bb-headline-lg">${esc(bbHeadline(s[1]))}</h2>
-     ${s[1].summary_fa?`<p class="bb-lead">${esc(s[1].summary_fa.slice(0,120))}</p>`:''}
-    `)}
-   </div>`:''}
-   ${s[2]?`<div class="bb-cell bb-cell-side-bottom">
-    <span class="bb-tag bb-tag-yellow">${esc(bbLabel(bbCategory(s[2])))}</span>
-    ${bbImgTag(s[2], 'bb-photo', 'style="aspect-ratio:4/3"')}
-    ${bbCellLink(s[2], `<h2 class="bb-headline-md">${esc(bbHeadline(s[2]))}</h2>`)}
-   </div>`:''}
-  </div>`:''}
-
-  <!-- ROW 2: 3 cells (2+2+2) — numbered popular + featured + guide -->
-  ${popular.length?`<div class="bb-grid">
-   <div class="bb-cell bb-span-2 bb-cell-dark">
-    <div class="bb-kicker">بورس اخبار</div>
-    <h2 class="bb-headline-lg" style="color:var(--bb-yellow);">پربازتاب‌ترین‌ها</h2>
-    <hr class="bb-sep">
-    ${popular.slice(0,3).map((p,i)=>bbNumberedItem(p,i+1)).join('')}
-   </div>
-   <div class="bb-cell bb-span-2 bb-cell-yellow">
-    ${s[3]?bbCellLink(s[3], `
-     <span class="bb-tag bb-tag-hot">${esc(bbLabel(bbCategory(s[3])))}</span>
-     ${bbImgTag(s[3], 'bb-photo', 'style="aspect-ratio:16/9"')}
-     <h2 class="bb-headline-lg">${esc(bbHeadline(s[3]))}</h2>
-     ${s[3].summary_fa?`<p class="bb-lead">${esc(s[3].summary_fa.slice(0,150))}</p>`:''}
-    `):''}
-   </div>
-   <div class="bb-cell bb-span-2">
-    ${s[4]&&s[5]?`
-     <div class="bb-kicker">تازه‌ها</div>
-     ${bbCellLink(s[4], `<h2 class="bb-headline-md">${esc(bbHeadline(s[4]))}</h2>`)}
-     <hr class="bb-sep">
-     ${bbCellLink(s[5], `<h2 class="bb-headline-md">${esc(bbHeadline(s[5]))}</h2>`)}
-     ${s[6]?`<hr class="bb-sep">${bbCellLink(s[6], `<h2 class="bb-headline-md">${esc(bbHeadline(s[6]))}</h2>`)}`:''}
-    `:''}
-   </div>
-  </div>`:''}
-
-  <!-- ROW 3: 2 cells (3+3) — quote + trivia -->
-  <div class="bb-grid">
-   ${s[7]?`<div class="bb-cell bb-span-3 bb-cell-dark">
-    <div class="bb-kicker">گفته‌ها و دیدگاه‌ها</div>
-    ${bbCellLink(s[7], `
-     <div class="bb-pull-quote" style="color:var(--bb-yellow); border-color:var(--bb-yellow);">«${esc(bbHeadline(s[7]))}»</div>
-     ${s[7].summary_fa?`<p class="bb-lead">${esc(s[7].summary_fa.slice(0,160))}</p>`:''}
-    `)}
-   </div>`:''}
-   <div class="bb-cell bb-span-3 bb-cell-yellow">
-    <div class="bb-horoscope">
-     <h2 class="bb-headline-lg">فال امروز، برای سرگرمی</h2>
-     <div class="bb-horo-strip">${['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'].map((m,i)=>`<button type="button" onclick="bbHoroscope(${i},this)" aria-pressed="false"><span class="bb-horo-icon">${['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'][i]}</span>${m}</button>`).join('')}</div>
-     <p id="bb-horo-result" aria-live="polite">ماه تولدت را انتخاب کن.</p>
-    </div>
-   </div>
-  </div>
-
-  <!-- ROW 4: 3 cells — more stories -->
-  <div class="bb-grid">
-   ${s.slice(8,11).map((st,i)=>{
-    const cls = i===1 ? 'bb-cell-dark' : i===2 ? 'bb-cell-yellow' : '';
-    return `<div class="bb-cell bb-span-2 ${cls}">
-     ${bbCellLink(st, `
-      <span class="bb-tag${i===1?' bb-tag-hot':''}">${esc(bbLabel(bbCategory(st)))}</span>
-      ${bbImgTag(st, 'bb-photo-sm')}
-      <h2 class="bb-headline-md">${esc(bbHeadline(st))}</h2>
-      ${bbSourceTag(st)}
-      ${st.summary_fa?`<p class="bb-lead">${esc(st.summary_fa.slice(0,120))}</p>`:''}
-     `)}
-    </div>`;
-   }).join('')}
-  </div>
-
-  <!-- SERIES STRIP -->
-  ${bbSeriesSection()}
-
-  <!-- ROW 5: More stories grid -->
-  ${s.length>11?`<div class="bb-grid">
-   ${s.slice(11,17).map((st,i)=>{
-    const cls = i%3===0 ? 'bb-cell-dark' : i%3===2 ? 'bb-cell-yellow' : '';
-    return `<div class="bb-cell bb-span-2 ${cls}">
-     ${bbCellLink(st, `
-      <span class="bb-tag">${esc(bbLabel(bbCategory(st)))}</span>
-      <h2 class="bb-headline-md">${esc(bbHeadline(st))}</h2>
-      ${bbSourceTag(st)}
-     `)}
-    </div>`;
-   }).join('')}
-  </div>`:''}
-
-  <!-- ROW 6: Poll + Game + Links -->
-  <div class="bb-grid">
-   <div class="bb-cell bb-span-2">
-    <div class="bb-kicker">نظرسنجی</div>
-    <h2 class="bb-headline-md">دوست داری بیشتر چه بخوانی؟</h2>
-    <div class="bb-poll-options" id="bb-poll-options"></div>
-   </div>
-   <div class="bb-cell bb-span-2">
-    <a class="bb-game-card" href="/badbadak/crossword/">
-     <span class="bb-game-icon" aria-hidden="true">▦</span>
-     <strong>جدول کلمات متقاطع</strong>
-    </a>
-    <hr class="bb-sep">
-    <div class="bb-kicker">وقت تماشا و خواندن</div>
-    <a href="/movies/" style="display:block;margin:4px 0;"><span class="bb-headline-sm">🎬 جان فیلم</span></a>
-    <a href="/tv/" style="display:block;margin:4px 0;"><span class="bb-headline-sm">📺 راهنمای تماشا</span></a>
-    <a href="/books/" style="display:block;margin:4px 0;"><span class="bb-headline-sm">📚 پیشخوان کتاب</span></a>
-   </div>
-   <div class="bb-cell bb-span-2 bb-cell-dark">
-    ${s.length>17?`
-     <div class="bb-kicker">بیشتر بخوانید</div>
-     ${s.slice(17,21).map(st=>bbCellLink(st, `<div class="bb-headline-sm" style="margin-bottom:6px;">${esc(bbHeadline(st))}</div>`)).join('<hr class="bb-sep">')}
-    `:`
-     <div class="bb-kicker">بیشتر بخوانید</div>
-     ${popular.slice(3,5).map(st=>bbCellLink(st, `<div class="bb-headline-sm" style="margin-bottom:6px;">${esc(bbHeadline(st))}</div>`)).join('<hr class="bb-sep">')}
-    `}
-   </div>
-  </div>
-
-  <!-- BOTTOM BAR -->
-  <div class="bb-bottom-bar">
-   <div><a href="/badbadak/">بادبادک</a> — رسانهٔ مستقل</div>
-   <div style="opacity:0.6;">چهره‌ها · سبک زندگی · سرگرمی · پیشخوان کتاب · جان‌فیلم · راهنمای تماشا</div>
-  </div>
- </div>`;
-
- bbPollRender();
-}
-
-/* === POLL === */
-function bbPollRender(){
- const el=document.getElementById('bb-poll-options');
- if(!el)return;
- let choice='';try{choice=localStorage.getItem('bb-poll-v1')||'';}catch(_){}
- el.innerHTML=['چهره‌ها و سرگرمی','خوراکی و سفر','زیبایی و استایل','سلامت و تکنولوژی'].map((s,i)=>`<button type="button" aria-pressed="${choice===String(i)}" onclick="bbVote(${i})">${choice===String(i)?'✓ ':''}${s}</button>`).join('');
-}
-function bbVote(i){try{localStorage.setItem('bb-poll-v1',String(i));}catch(_){}bbPollRender();}
-
-/* === HOROSCOPE === */
-function bbHoroscope(i,button){
- const lines=['یک گفت‌وگوی عقب‌افتاده را شروع کن.','امروز برای یک خوشی کوچک وقت بگذار.','یک ایده را یادداشت کن؛ شاید فردا به کارت بیاید.','به کسی که دلت برایش تنگ شده پیام بده.','کاری را که دوست داری از قدم کوچک شروع کن.','جای یک چیز اضافه را خالی کن.','برای خودت هم به اندازه دیگران وقت بگذار.','امروز یک مسیر تازه را امتحان کن.','یک کتاب یا فیلم تازه کشف کن.','برنامه‌ات را کمی سبک‌تر بچین.','یک آهنگ قدیمی را دوباره گوش کن.','برای یک دیدار دوستانه وقت پیدا کن.'];
- const day=new Intl.DateTimeFormat('en',{timeZone:'Asia/Tehran',day:'numeric'}).format(new Date());
- document.querySelectorAll('.bb-horo-strip button').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
- document.getElementById('bb-horo-result').textContent=lines[(i+Number(day))%12];
-}
-
-/* === SERIES SECTION === */
-function bbSeriesSection(){
- if(!_bbSeries.length||!['all','celeb','turkish'].includes(_bbCategory))return '';
- return `<div class="bb-series-section">
-  <div class="bb-section-title">امشب با سریال‌های ترکی</div>
-  <div class="bb-series-strip">${_bbSeries.map(r=>`<a class="bb-series-card" href="${esc(MESHKI_ROOT+'dizi/'+encodeURIComponent(r.slug)+'/')}" target="_blank" rel="noopener"><img src="${esc(r.hero)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true"><strong>${esc(r.titleFa||r.titleTr)}</strong><span>${esc(r.airing||r.day||'')}</span></a>`).join('')}</div>
- </div>`;
+ const seen=new Set();
+ const combined=[..._bbStories,..._bbMeshkiNews,..._bbBartarinha,..._bbRokna,..._bb7sobh]
+ .filter(st=>bbCategory(st)).filter(st=>{const key=(st.headline_fa||'').replace(/[\s‌،؛«»]/g,'');if(!key||seen.has(key))return false;seen.add(key);return true;})
+ .sort((a,b)=>(Date.parse(b.published_at)||0)-(Date.parse(a.published_at)||0));
+ const stories=combined.filter(st=>_bbCategory==='all'||bbCategory(st)===_bbCategory).slice(0,24);
+ const dated=combined.map(st=>Date.parse(st.published_at)).filter(Number.isFinite);
+ const latest=dated.length?new Intl.DateTimeFormat('fa-IR',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Tehran'}).format(new Date(Math.max(...dated))):'';
+ document.getElementById('badbadak-content').innerHTML=`<div class="bb-newspaper">
+ <header class="bb-masthead"><div><a class="bb-masthead-logo" href="./">بادبادک<span class="bb-brand-dot" aria-hidden="true"></span></a><p class="bb-masthead-center">چهره‌ها، سبک زندگی و سرگرمی</p></div><div class="bb-masthead-meta"><span>${bbPersianDate()}</span>${latest?`<span>تازه‌ترین خبر: ${esc(latest)}</span>`:''}</div></header>
+ <nav class="bb-pills" aria-label="موضوع خبرها">${BB_CATEGORIES.filter(([k])=>k==='all'||combined.some(st=>bbCategory(st)===k)).map(([k,label])=>`<button type="button" aria-pressed="${k===_bbCategory}" onclick="bbFilter('${k}')">${label}</button>`).join('')}</nav>
+ <section class="bb-news-list" aria-label="تازه‌ترین خبرها">${stories.length?stories.map((st,i)=>`<article class="bb-news-item${i===0?' bb-news-featured':''}">${bbCellLink(st,`${bbImgTag(st,'bb-news-image',i===0?'fetchpriority="high"':'')}<div class="bb-news-copy"><div class="bb-kicker">${esc(bbLabel(bbCategory(st)))}</div><h2 class="bb-headline-lg">${esc(bbHeadline(st))}</h2>${st.summary_fa?`<p class="bb-lead">${esc(st.summary_fa.slice(0,i===0?220:130))}</p>`:''}<div class="bb-news-meta">${bbSourceTag(st)}${st.published_at&&Number.isFinite(Date.parse(st.published_at))?`<time datetime="${esc(st.published_at)}">${esc(new Intl.DateTimeFormat('fa-IR',{day:'numeric',month:'short',timeZone:'Asia/Tehran'}).format(new Date(st.published_at)))}</time>`:''}</div></div>`)}</article>`).join(''):'<p class="state">خبری برای این موضوع در دسترس نیست.</p>'}</section>
+ <nav class="bb-footer-links" aria-label="پیوندهای دیگر"><a href="https://pendar.io/">پندار</a><a href="https://nimania.github.io/jan-kalam/">جان‌کلام</a><a href="#/crossword">جدول کلمات</a></nav></div>`;
 }
 
 /* === CROSSWORD === */
 function showBadbadakCrossword(){
  _bbPage='crossword';show('badbadak');setTab('');setHash('#/badbadak/crossword');document.title='جدول کلمات متقاطع | بادبادک';
- document.getElementById('badbadak-content').innerHTML='<div class="bb-newspaper"><div class="bb-masthead"><div class="bb-masthead-logo"> بادبادک</div><div class="bb-masthead-center">جدول کلمات متقاطع</div><div class="bb-masthead-meta"><a href="/badbadak/" style="color:var(--bb-yellow);">بازگشت</a></div></div><div class="bb-crossword"><div class="bb-game-heading"><div><h2>جدول کلمات متقاطع</h2><p>یک جدول انتخاب کن و شروع کن.</p></div></div><iframe title="بازی جدول کلمات فارسی" src="https://blankuapp.github.io/PersianCrossword/" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe><p style="font-size:.82rem;color:var(--ink-soft);padding:8px 0;"><a href="https://blankuapp.github.io/PersianCrossword/" target="_blank" rel="noopener">نمای تمام‌صفحه</a> · جدول کلمات فارسی</p></div></div>';
+ document.getElementById('badbadak-content').innerHTML='<div class="bb-newspaper"><div class="bb-masthead"><div class="bb-masthead-logo"> بادبادک</div><div class="bb-masthead-center">جدول کلمات متقاطع</div><div class="bb-masthead-meta"><a href="./">بازگشت</a></div></div><div class="bb-crossword"><div class="bb-game-heading"><div><h2>جدول کلمات متقاطع</h2><p>یک جدول انتخاب کن و شروع کن.</p></div></div><iframe title="بازی جدول کلمات فارسی" src="https://blankuapp.github.io/PersianCrossword/" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" referrerpolicy="no-referrer"></iframe><p style="font-size:.82rem;color:var(--ink-soft);padding:8px 0;"><a href="https://blankuapp.github.io/PersianCrossword/" target="_blank" rel="noopener">نمای تمام‌صفحه</a> · جدول کلمات فارسی</p></div></div>';
 }

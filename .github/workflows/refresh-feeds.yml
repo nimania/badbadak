@@ -5,6 +5,8 @@ on:
     - cron: '17 */3 * * *'
 permissions:
   contents: write
+  pages: write
+  id-token: write
 concurrency:
   group: badbadak-data
   cancel-in-progress: false
@@ -25,6 +27,8 @@ jobs:
           done
           curl -fLsS --retry 2 --max-time 45 'https://pendar.io/data/pendar-series-showcase.json' -o data/series-showcase.json.tmp && mv data/series-showcase.json.tmp data/series-showcase.json || rm -f data/series-showcase.json.tmp
           curl -fLsS --retry 2 --max-time 45 'https://meshki.media/data/news-feed.json' -o data/meshki-news-feed.json.tmp && mv data/meshki-news-feed.json.tmp data/meshki-news-feed.json || rm -f data/meshki-news-feed.json.tmp
+      - name: Install feed parser
+        run: pip install beautifulsoup4
       - name: Collect independent feeds
         run: |
           python scripts/collect_bartarinha.py --out data/bartarinha-feed.json || true
@@ -42,3 +46,23 @@ jobs:
             git commit -m 'Refresh Badbadak data'
             git push
           fi
+
+  deploy:
+    needs: refresh
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
