@@ -48,6 +48,14 @@ def parse_article(raw, url):
             container = max(candidates, key=lambda c: len(c.get_text(' ', strip=True)))
             break
     if container is None:
+        player = soup.select_one('iframe.vod_file')
+        player_url = safe_url(player.get('src'), url) if player else ''
+        if player_url and urlparse(player_url).hostname in {'mcdn.rokna.net'}:
+            description = soup.select_one('meta[property="og:description"]')
+            blocks = [{'type': 'video', 'url': player_url, 'text': title}]
+            if description and description.get('content'):
+                blocks.insert(0, {'type': 'paragraph', 'text': description['content']})
+            return title, hero, blocks
         raise ValueError('Article body was not found')
     for node in container.select(REMOVE):
         node.decompose()
@@ -66,7 +74,7 @@ def parse_article(raw, url):
         content = node.get_text(' ', strip=True)
         if content:
             blocks.append({'type': 'heading' if node.name.startswith('h') else 'paragraph', 'text': content})
-    if not any(b['type'] in ('paragraph', 'heading') for b in blocks):
+    if not blocks:
         content = container.get_text('\n', strip=True)
         blocks = [{'type': 'paragraph', 'text': line} for line in content.splitlines() if line.strip()]
     if not blocks:
@@ -97,7 +105,7 @@ def collect(row, previous):
     checked = old.get('checked_at')
     if checked and old.get('blocks') and old.get('url') == row['url']:
         if (now - datetime.fromisoformat(checked)).total_seconds() < 86400:
-            return {**old, **row}
+            return {**row, **old, 'summary': row['summary'], 'published': row['published']}
     result = {**old, **row, 'checked_at': now.isoformat()}
     try:
         if urlparse(row['url']).hostname.removeprefix('www.') not in ALLOWED:
@@ -134,7 +142,11 @@ def build_page(row):
     blocks = row.get('blocks', [])
     paragraphs = []
     for block in blocks:
-        if block['type'] == 'image':
+        if block['type'] == 'video':
+            u = safe_url(block.get('url'))
+            if urlparse(u).hostname == 'mcdn.rokna.net':
+                paragraphs.append('<iframe class="bb-article-video" title="' + escape(block.get('text', 'ویدئوی خبر'), quote=True) + '" src="' + escape(u, quote=True) + '" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin" referrerpolicy="no-referrer"></iframe>')
+        elif block['type'] == 'image':
             u = safe_url(block.get('url'))
             if u:
                 paragraphs.append('<figure><img src="' + escape(u, quote=True) + '" alt="' + escape(block.get('text', ''), quote=True) + '" loading="lazy" referrerpolicy="no-referrer"></figure>')
@@ -161,7 +173,7 @@ def main():
     previous = json.loads(CACHE.read_text()).get('articles', {}) if CACHE.exists() else {}
     rows = inputs()
     if args.build_only:
-        current = [{**previous.get(str(row['id']), {}), **row} for row in rows]
+        current = [{**row, **previous.get(str(row['id']), {})} for row in rows]
     else:
         with ThreadPoolExecutor(max_workers=10) as pool:
             current = list(pool.map(lambda row: collect(row, previous), rows))
