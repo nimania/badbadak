@@ -34,6 +34,8 @@ jobs:
           python scripts/collect_bartarinha.py --out data/bartarinha-feed.json || true
           python scripts/collect_rokna.py --out data/rokna-feed.json || true
           python scripts/collect_7sobh.py --out data/7sobh-feed.json || true
+      - name: Retrieve full articles and verify source links
+        run: python scripts/build_articles.py
       - name: Keep existing snapshots when a source is temporarily unavailable
         run: |
           for f in data/*.json; do python -m json.tool "$f" >/dev/null; done
@@ -60,6 +62,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install article parser
+        run: pip install beautifulsoup4
+      - name: Build local article pages
+        run: python scripts/build_articles.py --build-only
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -10,7 +10,7 @@ function bbCategory(s){
 }
 function bbLabel(k){return BB_CATEGORIES.find(c=>c[0]===k)?.[1]||'تازه‌ها';}
 function bbSafeImage(u){return typeof u==='string'&&(/^(https?:\/\/|assets\/)/.test(u))?u:'';}
-function bbStoryURL(s){return s.bb_url||routeURL('#/story/'+encodeURIComponent(s.id));}
+function bbStoryURL(s){return './news/'+String(s.id).replace(/[^A-Za-z0-9_-]/g,'_')+'/';}
 
 const BB_HEADLINES={
  'aed86c62-6776-4969-933d-d5282283e40c':'گوشی سیاوش طهمورث به صاحبش برگشت',
@@ -122,7 +122,7 @@ function bbSourceTag(s){
 /* === Cell builder helpers === */
 function bbCellLink(s, inner, cls=''){
  const url=bbStoryURL(s);
- const ext=s.bb_url?' target="_blank" rel="noopener"':'';
+ const ext='';
  return `<a href="${esc(url)}"${ext}>${inner}</a>`;
 }
 function bbImgTag(s, cls='bb-photo', extra=''){
