@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import re
 from urllib.error import HTTPError
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, unquote_plus
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from book_mentions import catalog as book_catalog, enrich_articles
@@ -37,7 +37,7 @@ def image_key(url):
     if host in {'cdn.7sobh.com', 'cdn.bartarinha.ir', 'cdn.rokna.net'}:
         match = re.search(r'/(?:thumbnail|servev2|serve)/([^/]+)/', parsed.path)
         if match:
-            return (host, match.group(1))
+            return (host, match.group(1), unquote_plus(parsed.path.rsplit('/', 1)[-1]))
     return (host, parsed.path, parsed.query)
 
 def fetch_url(url):
