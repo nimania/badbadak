@@ -123,10 +123,10 @@ def collect(row, previous):
     old = previous.get(str(row['id']), {})
     now = datetime.now(timezone.utc)
     checked = old.get('checked_at')
-    if checked and old.get('blocks') and old.get('url') == row['url']:
+    if checked and old.get('blocks') and old.get('status') == 'ok' and old.get('parser_version') == 3 and old.get('url') == row['url']:
         if (now - datetime.fromisoformat(checked)).total_seconds() < 86400:
             return {**row, **old, 'summary': row['summary'], 'published': row['published']}
-    result = {**old, **row, 'checked_at': now.isoformat()}
+    result = {**old, **row, 'checked_at': now.isoformat(), 'parser_version': 3}
     try:
         if urlparse(row['url']).hostname.removeprefix('www.') not in ALLOWED:
             raise ValueError('Unsupported source host')
