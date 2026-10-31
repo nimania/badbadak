@@ -1,0 +1,162 @@
+[
+  {
+    "id": "sample-1",
+    "clue": "پایتخت ایران",
+    "answer": "تهران",
+    "category": "جغرافیا",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-2",
+    "clue": "شاعر شاهنامه",
+    "answer": "فردوسی",
+    "category": "ادبیات",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-3",
+    "clue": "سیارهٔ سرخ",
+    "answer": "مریخ",
+    "category": "نجوم",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-4",
+    "clue": "واحد پول ژاپن",
+    "answer": "ین",
+    "category": "عمومی",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-5",
+    "clue": "دریای شمال ایران",
+    "answer": "خزر",
+    "category": "جغرافیا",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-6",
+    "clue": "نویسندهٔ بوف کور",
+    "answer": "صادق هدایت",
+    "category": "ادبیات",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-7",
+    "clue": "پایتخت فرانسه",
+    "answer": "پاریس",
+    "category": "جغرافیا",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-8",
+    "clue": "بزرگ‌ترین سیارهٔ منظومهٔ شمسی",
+    "answer": "مشتری",
+    "category": "نجوم",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-9",
+    "clue": "ابزار سنجش دما",
+    "answer": "دماسنج",
+    "category": "علم",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-10",
+    "clue": "زبان رسمی برزیل",
+    "answer": "پرتغالی",
+    "category": "جغرافیا",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-11",
+    "clue": "رنگ حاصل از آبی و زرد",
+    "answer": "سبز",
+    "category": "هنر",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-12",
+    "clue": "پرندهٔ پیام‌رسان در گذشته",
+    "answer": "کبوتر",
+    "category": "عمومی",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-13",
+    "clue": "یکی از سازهای زهی ایرانی",
+    "answer": "تار",
+    "category": "موسیقی",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-14",
+    "clue": "مرکز استان فارس",
+    "answer": "شیراز",
+    "category": "جغرافیا",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-15",
+    "clue": "شهر زادگاه حافظ",
+    "answer": "شیراز",
+    "category": "ادبیات",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  },
+  {
+    "id": "sample-16",
+    "clue": "بزرگ‌ترین اقیانوس زمین",
+    "answer": "آرام",
+    "category": "جغرافیا",
+    "difficulty": "easy",
+    "source": "نمونهٔ تألیفی",
+    "license": "internal",
+    "reviewed": true
+  }
+]
