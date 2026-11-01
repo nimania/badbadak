@@ -36,7 +36,8 @@ const BB_HEADLINES={
  'd938529a4313':'ویدیوی عاشقانه بانو آلکان در هلند',
  'b54e0a588663':'مهمانی نازلی صابانجی برای فرزندش',
  '1d37134e6f2c':'لحظات شاد عزیز پیش از مرگ',
- 'c4c8143a7f0a':'تغییرات بزرگ در سوروایور ۲۰۲۷'
+ 'c4c8143a7f0a':'تغییرات بزرگ در سوروایور ۲۰۲۷',
+ 'hamid-alidoosti-1405':'حمید علیدوستی درگذشت'
 };
 
 function bbHeadline(s){
@@ -76,11 +77,12 @@ async function renderBadbadak(){
  const el=document.getElementById('badbadak-content');el.innerHTML='<div class="state" role="status">در حال آوردن تازه‌های بادبادک…</div>';
  _bbLoading=(async()=>{
  try{
- const results=await Promise.allSettled([ALL.length?Promise.resolve(ALL):getJSON(`${DATA}/stories.json`),Promise.resolve({}),Promise.resolve({}),Promise.resolve([]),getJSON(`${DATA}/meshki-news-feed.json`,8000),Promise.resolve({rows:[]}),getJSON(`${DATA}/bartarinha-feed.json`,8000),getJSON(`${DATA}/rokna-feed.json`,8000),getJSON(`${DATA}/7sobh-feed.json`,8000)]);
+ const results=await Promise.allSettled([ALL.length?Promise.resolve(ALL):getJSON(`${DATA}/stories.json`),Promise.resolve({}),Promise.resolve({}),Promise.resolve([]),getJSON(`${DATA}/meshki-news-feed.json`,8000),Promise.resolve({rows:[]}),getJSON(`${DATA}/bartarinha-feed.json`,8000),getJSON(`${DATA}/rokna-feed.json`,8000),getJSON(`${DATA}/7sobh-feed.json`,8000),getJSON(`${DATA}/featured-news.json`,8000)]);
  if(results[0].status!=='fulfilled'&&results[4].status!=='fulfilled'&&![6,7,8].some(i=>results[i].status==='fulfilled'&&Array.isArray(results[i].value)&&results[i].value.length))throw new Error('stories');
  const data=results[0].status==='fulfilled'?results[0].value:[];const stories=Array.isArray(data)?data:data.stories||[];
  const now=Date.now();const age=s=>Math.max(0,(now-Date.parse(s.last_seen||s.published_at||s.first_seen||''))/86400000)||0;
- _bbStories=stories.filter(s=>s.id&&bbCategory(s)).sort((a,b)=>(Math.log2(1+(b.source_count||1))*3-age(b)+(bbCategory(b)==='celeb'?5:0))-(Math.log2(1+(a.source_count||1))*3-age(a)+(bbCategory(a)==='celeb'?5:0))).slice(0,120);
+ const curated=results[9].status==='fulfilled'&&Array.isArray(results[9].value)?results[9].value:[];
+ _bbStories=[...curated,...stories].filter(s=>s.id&&bbCategory(s)).sort((a,b)=>(Math.log2(1+(b.source_count||1))*3-age(b)+(bbCategory(b)==='celeb'?5:0))-(Math.log2(1+(a.source_count||1))*3-age(a)+(bbCategory(a)==='celeb'?5:0))).slice(0,120);
  const figures=results[1].status==='fulfilled'?results[1].value:{};
  const registry=results[2].status==='fulfilled'?results[2].value:{};
  const entities=Array.isArray(registry)?registry:Array.isArray(registry.entities)?registry.entities:Object.values(registry.entities||{});
@@ -147,7 +149,7 @@ function bbRender(){
  const seen=new Set();
  const combined=[..._bbStories,..._bbMeshkiNews,..._bbBartarinha,..._bbRokna,..._bb7sobh]
  .filter(st=>bbCategory(st)).filter(st=>{const key=(st.headline_fa||'').replace(/[\s‌،؛«»]/g,'');if(!key||seen.has(key))return false;seen.add(key);return true;})
- .sort((a,b)=>(Date.parse(b.published_at)||0)-(Date.parse(a.published_at)||0));
+ .sort((a,b)=>(Number(!!b.bb_featured)-Number(!!a.bb_featured))||(Date.parse(b.published_at)||0)-(Date.parse(a.published_at)||0));
  const stories=combined.filter(st=>_bbCategory==='all'||bbCategory(st)===_bbCategory).slice(0,24);
  const dated=combined.map(st=>Date.parse(st.published_at)).filter(Number.isFinite);
  const latest=dated.length?new Intl.DateTimeFormat('fa-IR',{month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Tehran'}).format(new Date(Math.max(...dated))):'';
