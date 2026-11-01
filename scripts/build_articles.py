@@ -208,7 +208,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--build-only', action='store_true')
     args = parser.parse_args()
-    previous = json.loads(CACHE.read_text()).get('articles', {}) if CACHE.exists() else {}
+    previous = json.loads(CACHE.read_text(encoding='utf-8')).get('articles', {}) if CACHE.exists() and CACHE.stat().st_size > 0 else {}
     rows = inputs()
     if args.build_only:
         current = [{**row, **previous.get(str(row['id']), {})} for row in rows]
