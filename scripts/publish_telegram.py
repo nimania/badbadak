@@ -1,4 +1,4 @@
-import json,os,re,html,sys,time,datetime as dt,urllib.request,urllib.parse
+import json,os,re,html,sys,time,argparse,datetime as dt,urllib.request,urllib.parse
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 STATE=ROOT/'data/telegram-published.json'
@@ -53,6 +53,19 @@ def message(o):
  if len(summary)>440:summary=summary[:440].rstrip(' ،؛')+'…'
  return '🪁 <b>'+title+'</b>'+ ('\n\n'+html.escape(summary) if summary else '')+'\n\n🔗 <a href="'+html.escape(o['link'],quote=True)+'">متن کامل و منبع</a>\n\n@badbadakmedia'
 def main():
+ parser=argparse.ArgumentParser()
+ parser.add_argument('--test',action='store_true',help='Send one verification post to the Badbadak channel')
+ args=parser.parse_args()
+ if args.test:
+  token=os.getenv('NESHANIKERMAN_BOT_TOKEN','')
+  if not token:sys.exit('Missing NESHANIKERMAN_BOT_TOKEN secret')
+  me=call(token,'getMe',{})
+  if me.get('username','').lower()!='neshanikerman_bot':sys.exit('Wrong bot account')
+  member=call(token,'getChatMember',{'chat_id':'@badbadakmedia','user_id':me['id']})
+  if member.get('status') not in ('administrator','creator') or (member.get('status')=='administrator' and not member.get('can_post_messages',False)):sys.exit('Bot needs permission to post')
+  sent=call(token,'sendMessage',{'chat_id':'@badbadakmedia','text':'🪁 پیام آزمایشی بادبادک\n\nاتصال انتشار خودکار بادبادک به این کانال با موفقیت آزمایش شد.\n\n@badbadakmedia'})
+  print('Telegram test sent; message_id:',sent['message_id'])
+  return
  state=read(STATE,{})
  seen=state.get('published',{}) if isinstance(state,dict) else {}
  candidates=collect()
