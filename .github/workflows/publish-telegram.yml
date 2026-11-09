@@ -37,7 +37,7 @@ jobs:
           NESHANIKERMAN_BOT_TOKEN: ${{ secrets.NESHANIKERMAN_BOT_TOKEN }}
         run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
-            python scripts/publish_telegram.py --discover
+            python scripts/publish_telegram.py --test
           elif [[ "${{ inputs.mode }}" == "test" ]]; then
             python scripts/publish_telegram.py --test
           elif [[ "${{ inputs.mode }}" == "discover" ]]; then
