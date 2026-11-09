@@ -3,6 +3,12 @@ on:
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
+    inputs:
+      send_test:
+        description: 'Send one test message to @badbadakmedia (no news)'
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -22,7 +28,7 @@ jobs:
       - name: Publish new articles
         env:
           NESHANIKERMAN_BOT_TOKEN: ${{ secrets.NESHANIKERMAN_BOT_TOKEN }}
-        run: python scripts/publish_telegram.py
+        run: python scripts/publish_telegram.py ${{ inputs.send_test && '--test' || '' }}
       - name: Save publication history
         if: always()
         run: |
