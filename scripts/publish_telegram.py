@@ -77,9 +77,9 @@ def main():
   if not token:sys.exit('Missing NESHANIKERMAN_BOT_TOKEN secret')
   me=call(token,'getMe',{})
   if me.get('username','').lower()!='neshanikermanbot':sys.exit('Wrong bot account')
-  member=call(token,'getChatMember',{'chat_id':'@badbadakmedia','user_id':me['id']})
+  member=call(token,'getChatMember',{'chat_id':'-1004451374854','user_id':me['id']})
   if member.get('status') not in ('administrator','creator') or (member.get('status')=='administrator' and not member.get('can_post_messages',False)):sys.exit('Bot needs permission to post')
-  sent=call(token,'sendMessage',{'chat_id':'@badbadakmedia','text':'🪁 پیام آزمایشی بادبادک\n\nاتصال انتشار خودکار بادبادک به این کانال با موفقیت آزمایش شد.\n\n@badbadakmedia'})
+  sent=call(token,'sendMessage',{'chat_id':'-1004451374854','text':'🪁 پیام آزمایشی بادبادک\n\nاتصال انتشار خودکار بادبادک به این کانال با موفقیت آزمایش شد.\n\n@badbadakmedia'})
   print('Telegram test sent; message_id:',sent['message_id'])
   return
  state=read(STATE,{})
@@ -95,11 +95,11 @@ def main():
  if not token:sys.exit('Missing NESHANIKERMAN_BOT_TOKEN secret; no posts sent')
  me=call(token,'getMe',{})
  if me.get('username','').lower()!='neshanikermanbot':sys.exit('Wrong bot account; no posts sent')
- member=call(token,'getChatMember',{'chat_id':'@badbadakmedia','user_id':me['id']})
+ member=call(token,'getChatMember',{'chat_id':'-1004451374854','user_id':me['id']})
  if member.get('status') not in ('administrator','creator') or (member.get('status')=='administrator' and not member.get('can_post_messages',False)):sys.exit('Bot needs channel post permission')
  failures=0
  for o in pending[:8]:
-  base={'chat_id':'@badbadakmedia','parse_mode':'HTML'}
+  base={'chat_id':'-1004451374854','parse_mode':'HTML'}
   try:
    photo=o['image']
    if isinstance(photo,str) and photo.startswith('https://'):
