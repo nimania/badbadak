@@ -4,11 +4,15 @@ on:
     - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
-      send_test:
-        description: 'Send one test message to @badbadakmedia (no news)'
-        type: boolean
-        required: false
-        default: false
+      mode:
+        description: 'Choose what to run'
+        type: choice
+        options:
+          - test
+          - discover
+          - publish
+        default: test
+        required: true
 permissions:
   contents: write
 concurrency:
@@ -28,7 +32,14 @@ jobs:
       - name: Publish new articles
         env:
           NESHANIKERMAN_BOT_TOKEN: ${{ secrets.NESHANIKERMAN_BOT_TOKEN }}
-        run: python scripts/publish_telegram.py ${{ inputs.send_test && '--test' || '' }}
+        run: |
+          if [[ "${{ inputs.mode }}" == "test" ]]; then
+            python scripts/publish_telegram.py --test
+          elif [[ "${{ inputs.mode }}" == "discover" ]]; then
+            python scripts/publish_telegram.py --discover
+          else
+            python scripts/publish_telegram.py
+          fi
       - name: Save publication history
         if: always()
         run: |
