@@ -59,7 +59,7 @@ CATEGORIES=[
 SOURCENAMES={'bartarinha-feed.json':'برترین‌ها','rokna-feed.json':'رکنا','7sobh-feed.json':'هفت صبح','meshki-news-feed.json':'مشکی','stories.json':'بادبادک','featured-news.json':'بادبادک'}
 def clean_text(value):
  value=html.unescape(re.sub(r'<[^>]+>',' ',str(value or '')))
- return re.sub(r'\\s+',' ',value).strip()
+ return re.sub(r'\s+',' ',value).strip()
 def category(title):
  for label,pattern in CATEGORIES:
   if re.search(pattern,title,re.IGNORECASE):return label
@@ -74,7 +74,7 @@ def message(o):
  parts=[category(title),'<b>'+html.escape(title)+'</b>']
  if summary:parts.append(html.escape(summary))
  parts.append('منبع: '+html.escape(SOURCENAMES.get(o.get('source'),'بادبادک'))+'  |  @badbadakmedia')
- return '\\n\\n'.join(parts)
+ return '\n\n'.join(parts)
 def buttons(o):
  return json.dumps({'inline_keyboard':[[{'text':'📖 خواندن خبر و دیدن منبع','url':o['link']}]]},ensure_ascii=False)
 def main():
