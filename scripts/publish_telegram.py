@@ -40,18 +40,43 @@ def collect():
     link=o.get('url');image=o.get('image')
    if not isinstance(link,str) or not link.startswith('https://'):continue
    key=kind+':'+uid
-   out[key]={'key':key,'title':title,'summary':str(o.get('summary_fa') or o.get('summaryFa') or o.get('summary') or ''),'link':link,'image':image,'date':stamp}
+   out[key]={'key':key,'title':title,'summary':str(o.get('summary_fa') or o.get('summaryFa') or o.get('summary') or ''),'link':link,'image':image,'date':stamp,'source':filename}
  return sorted(out.values(),key=lambda x:(x['date'],x['key']))
 def call(token,method,values):
  req=urllib.request.Request('https://api.telegram.org/bot'+token+'/'+method,data=urllib.parse.urlencode(values).encode(),headers={'Content-Type':'application/x-www-form-urlencoded'})
  with urllib.request.urlopen(req,timeout=25) as resp:result=json.load(resp)
  if not result.get('ok'):raise RuntimeError(str(result.get('description')))
  return result['result']
+CATEGORIES=[
+ ('🎬 سینما و سرگرمی',r'سینما|سریال|فیلم|بازیگر|خواننده|کنسرت|هنرمند|فیلیمو|نماوا'),
+ ('🍽 خوراک و سبک زندگی',r'غذا|آشپزی|رستوران|قهوه|شیرینی|خوراک'),
+ ('✨ مد و زیبایی',r'استایل|فشن|پوشاک|لباس|آرایش|زیبایی|پوست'),
+ ('🩺 سلامت',r'سلامت|پزشکی|بیماری|درمان'),
+ ('✈️ سفر و گردشگری',r'گردشگری|سفر|هتل'),
+ ('📱 فناوری',r'فناوری|تکنولوژی|گجت|آیفون'),
+ ('🚨 حوادث',r'حادثه|تصادف|آتش.?سوزی|قتل'),
+]
+SOURCENAMES={'bartarinha-feed.json':'برترین‌ها','rokna-feed.json':'رکنا','7sobh-feed.json':'هفت صبح','meshki-news-feed.json':'مشکی','stories.json':'بادبادک','featured-news.json':'بادبادک'}
+def clean_text(value):
+ value=html.unescape(re.sub(r'<[^>]+>',' ',str(value or '')))
+ return re.sub(r'\\s+',' ',value).strip()
+def category(title):
+ for label,pattern in CATEGORIES:
+  if re.search(pattern,title,re.IGNORECASE):return label
+ return '🪁 تازه‌های بادبادک'
 def message(o):
- title=html.escape(o['title'][:180])
- summary=re.sub('\\s+',' ',re.sub('<[^>]*>','',o['summary'])).strip()
- if len(summary)>440:summary=summary[:440].rstrip(' ،؛')+'…'
- return '🪁 <b>'+title+'</b>'+ ('\n\n'+html.escape(summary) if summary else '')+'\n\n🔗 <a href="'+html.escape(o['link'],quote=True)+'">متن کامل و منبع</a>\n\n@badbadakmedia'
+ title=clean_text(o['title'])[:170]
+ summary=clean_text(o.get('summary',''))
+ if summary and summary.casefold()==title.casefold():summary=''
+ if len(summary)>240:
+  cut=summary[:241].rsplit(' ',1)[0]
+  summary=(cut or summary[:240]).rstrip(' ،؛.\u060c')+'…'
+ parts=[category(title),'<b>'+html.escape(title)+'</b>']
+ if summary:parts.append(html.escape(summary))
+ parts.append('منبع: '+html.escape(SOURCENAMES.get(o.get('source'),'بادبادک'))+'  |  @badbadakmedia')
+ return '\\n\\n'.join(parts)
+def buttons(o):
+ return json.dumps({'inline_keyboard':[[{'text':'📖 خواندن خبر و دیدن منبع','url':o['link']}]]},ensure_ascii=False)
 def main():
  parser=argparse.ArgumentParser()
  parser.add_argument('--test',action='store_true',help='Send one verification post to the Badbadak channel')
@@ -99,7 +124,7 @@ def main():
  if member.get('status') not in ('administrator','creator') or (member.get('status')=='administrator' and not member.get('can_post_messages',False)):sys.exit('Bot needs channel post permission')
  failures=0
  for o in pending[:8]:
-  base={'chat_id':'-1004451374854','parse_mode':'HTML'}
+  base={'chat_id':'-1004451374854','parse_mode':'HTML','reply_markup':buttons(o)}
   try:
    photo=o['image']
    if isinstance(photo,str) and photo.startswith('https://'):
