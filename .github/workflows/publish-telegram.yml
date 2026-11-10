@@ -1,5 +1,14 @@
 name: Publish Badbadak to Telegram
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/featured-news.json'
+      - 'data/stories.json'
+      - 'data/meshki-news-feed.json'
+      - 'data/bartarinha-feed.json'
+      - 'data/rokna-feed.json'
+      - 'data/7sobh-feed.json'
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
