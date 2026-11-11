@@ -25,6 +25,11 @@ jobs:
         run: pip install beautifulsoup4
       - name: Retrieve full articles and verify source links
         run: python scripts/build_articles.py
+      - name: Build published WordPress posts (safe cutover)
+        if: ${{ vars.BADBADAK_WP_API_URL != '' }}
+        env:
+          BADBADAK_WP_API_URL: ${{ vars.BADBADAK_WP_API_URL }}
+        run: python scripts/build_from_wordpress.py
       - uses: actions/configure-pages@v5
         with:
           enablement: true
