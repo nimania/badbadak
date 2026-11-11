@@ -80,7 +80,7 @@ async function renderBadbadak(){
  _bbLoading=(async()=>{
  try{
  const results=await Promise.allSettled([ALL.length?Promise.resolve(ALL):getJSON(`${DATA}/stories.json`),Promise.resolve({}),Promise.resolve({}),Promise.resolve([]),getJSON(`${DATA}/meshki-news-feed.json`,8000),Promise.resolve({rows:[]}),getJSON(`${DATA}/bartarinha-feed.json`,8000),getJSON(`${DATA}/rokna-feed.json`,8000),getJSON(`${DATA}/7sobh-feed.json`,8000),getJSON(`${DATA}/featured-news.json`,8000),getJSON(`${DATA}/wordpress-posts.json`,8000)]);
- if(results[0].status!=='fulfilled'&&results[4].status!=='fulfilled'&&![6,7,8].some(i=>results[i].status==='fulfilled'&&Array.isArray(results[i].value)&&results[i].value.length))throw new Error('stories');
+ if(results[0].status!=='fulfilled'&&results[4].status!=='fulfilled'&&![6,7,8].some(i=>results[i].status==='fulfilled'&&Array.isArray(results[i].value)&&results[i].value.length)&&!(results[10].status==='fulfilled'&&Array.isArray(results[10].value?.posts)&&results[10].value.posts.length))throw new Error('stories');
  const data=results[0].status==='fulfilled'?results[0].value:[];const stories=Array.isArray(data)?data:data.stories||[];
  const now=Date.now();const age=s=>Math.max(0,(now-Date.parse(s.last_seen||s.published_at||s.first_seen||''))/86400000)||0;
  const curated=results[9].status==='fulfilled'&&Array.isArray(results[9].value)?results[9].value:[];
