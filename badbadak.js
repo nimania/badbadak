@@ -1,8 +1,10 @@
 /* Badbadak: tabloid newspaper lens over Pendar's existing datasets. */
 const BB_CATEGORIES = [ ['all','همه'], ['celeb','سلبریتی'], ['turkish','سریال‌های ترکی'], ['beauty','آرایش و زیبایی'], ['health','سلامت'], ['style','مُد و استایل'], ['food','خوراکی'], ['buzz','جنجال و حوادث'], ['tech','تکنولوژی'], ['travel','سفر'] ];
+let _bbUsingWordPress=false;
 let _badbadakLoaded=false, _bbLoading=null, _bbStories=[], _bbPeople=[], _bbTrends=[], _bbCategory='all', _bbMeshkiNews=[], _bbBartarinha=[], _bbRokna=[], _bb7sobh=[], _bbSeries=[], _bbPage='home';
 
 function bbCategory(s){
+ if(s.bb_origin==='wordpress'&&BB_CATEGORIES.some(([key])=>key===s.bb_category))return s.bb_category;
  const t=s.headline_fa||s.title_fa||s.title||'';
  if(/نفتکش|سپاه|موشک|حمله نظامی|تنگه هرمز|غزه|انتخابات|نتانیاهو|کنست|انصارالله|آرایش.*منطقه|جنگ|سفیر|دیپلمات|وزیر|رئیس‌جمهور|جاسوسی|تروریست|پایگاه نظامی|ناتو/.test(t)&&!/بازیگر|خواننده|هنرمند/.test(t))return null;
  for(const [key,re] of [['celeb',/بازیگر|خواننده|سینما|سریال|هنرمند|کنسرت|سلبریتی|جشنواره.*فیلم|منوچهر هادی|یکتا ناصر/],['beauty',/آرایش|زیبایی|پوست(?:\s|$)|موهای|مراقبت.*مو/],['food',/خوراک|غذا|رستوران|آشپزی|تغذیه|قهوه|شیرینی/],['style',/پوشاک|لباس|استایل|فشن|طراح.*مد/],['health',/سلامت|پزشکی|بیماری|درمان|بهداشت|طاعون/],['travel',/گردشگری|هتل|مقصد.*سفر/],['tech',/فناوری|هوش مصنوعی|تکنولوژی|گجت|آیفون/],['buzz',/حادثه|تصادف|آتش.سوزی|جنجال|حاشیه|قتل|شهربازی/]])if(re.test(t))return key;
@@ -77,12 +79,14 @@ async function renderBadbadak(){
  const el=document.getElementById('badbadak-content');el.innerHTML='<div class="state" role="status">در حال آوردن تازه‌های بادبادک…</div>';
  _bbLoading=(async()=>{
  try{
- const results=await Promise.allSettled([ALL.length?Promise.resolve(ALL):getJSON(`${DATA}/stories.json`),Promise.resolve({}),Promise.resolve({}),Promise.resolve([]),getJSON(`${DATA}/meshki-news-feed.json`,8000),Promise.resolve({rows:[]}),getJSON(`${DATA}/bartarinha-feed.json`,8000),getJSON(`${DATA}/rokna-feed.json`,8000),getJSON(`${DATA}/7sobh-feed.json`,8000),getJSON(`${DATA}/featured-news.json`,8000)]);
+ const results=await Promise.allSettled([ALL.length?Promise.resolve(ALL):getJSON(`${DATA}/stories.json`),Promise.resolve({}),Promise.resolve({}),Promise.resolve([]),getJSON(`${DATA}/meshki-news-feed.json`,8000),Promise.resolve({rows:[]}),getJSON(`${DATA}/bartarinha-feed.json`,8000),getJSON(`${DATA}/rokna-feed.json`,8000),getJSON(`${DATA}/7sobh-feed.json`,8000),getJSON(`${DATA}/featured-news.json`,8000),getJSON(`${DATA}/wordpress-posts.json`,8000)]);
  if(results[0].status!=='fulfilled'&&results[4].status!=='fulfilled'&&![6,7,8].some(i=>results[i].status==='fulfilled'&&Array.isArray(results[i].value)&&results[i].value.length))throw new Error('stories');
  const data=results[0].status==='fulfilled'?results[0].value:[];const stories=Array.isArray(data)?data:data.stories||[];
  const now=Date.now();const age=s=>Math.max(0,(now-Date.parse(s.last_seen||s.published_at||s.first_seen||''))/86400000)||0;
  const curated=results[9].status==='fulfilled'&&Array.isArray(results[9].value)?results[9].value:[];
- _bbStories=[...curated,...stories].filter(s=>s.id&&bbCategory(s)).sort((a,b)=>(Math.log2(1+(b.source_count||1))*3-age(b)+(bbCategory(b)==='celeb'?5:0))-(Math.log2(1+(a.source_count||1))*3-age(a)+(bbCategory(a)==='celeb'?5:0))).slice(0,120);
+ const wpData=results[10].status==='fulfilled'?results[10].value:null;
+ _bbUsingWordPress=!!(wpData&&Array.isArray(wpData.posts)&&wpData.posts.length>0);
+ _bbStories=_bbUsingWordPress?wpData.posts.slice(0,300):[...curated,...stories].filter(s=>s.id&&bbCategory(s)).sort((a,b)=>(Math.log2(1+(b.source_count||1))*3-age(b)+(bbCategory(b)==='celeb'?5:0))-(Math.log2(1+(a.source_count||1))*3-age(a)+(bbCategory(a)==='celeb'?5:0))).slice(0,120);
  const figures=results[1].status==='fulfilled'?results[1].value:{};
  const registry=results[2].status==='fulfilled'?results[2].value:{};
  const entities=Array.isArray(registry)?registry:Array.isArray(registry.entities)?registry.entities:Object.values(registry.entities||{});
@@ -147,7 +151,7 @@ function bbNumberedItem(s, num){
 function bbRender(){
  if(_bbPage!=='home')return;
  const seen=new Set();
- const combined=[..._bbStories,..._bbMeshkiNews,..._bbBartarinha,..._bbRokna,..._bb7sobh]
+ const combined=(_bbUsingWordPress?_bbStories:[..._bbStories,..._bbMeshkiNews,..._bbBartarinha,..._bbRokna,..._bb7sobh])
  .filter(st=>bbCategory(st)).filter(st=>{const key=(st.headline_fa||'').replace(/[\s‌،؛«»]/g,'');if(!key||seen.has(key))return false;seen.add(key);return true;})
  .sort((a,b)=>(Number(!!b.bb_featured)-Number(!!a.bb_featured))||(Date.parse(b.published_at)||0)-(Date.parse(a.published_at)||0));
  const stories=combined.filter(st=>_bbCategory==='all'||bbCategory(st)===_bbCategory).slice(0,24);
