@@ -102,11 +102,12 @@ def fetch_posts(site):
                                          headers={"User-Agent": "Badbadak-Static-Publisher/1.0",
                                                   "Accept": "application/json"})
         with urllib.request.urlopen(request, timeout=35) as response:
+            total_pages = int(response.headers.get("X-WP-TotalPages") or "0")
             batch = json.load(response)
         if not isinstance(batch, list):
             raise ValueError("WordPress posts endpoint did not return a list")
         output.extend(batch)
-        if len(batch) < 100:
+        if len(batch) < 100 or (total_pages and page >= total_pages):
             break
     return output
 
