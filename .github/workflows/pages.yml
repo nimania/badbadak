@@ -25,6 +25,8 @@ jobs:
         run: pip install beautifulsoup4
       - name: Retrieve full articles and verify source links
         run: python scripts/build_articles.py
+      - name: Redirect legacy Pages URLs to primary WordPress site
+        run: python scripts/redirect_legacy.py
       - uses: actions/configure-pages@v5
         with:
           enablement: true
