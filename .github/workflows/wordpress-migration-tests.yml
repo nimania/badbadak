@@ -1,0 +1,22 @@
+name: Test WordPress migration
+on:
+  pull_request:
+    paths:
+      - 'scripts/build_from_wordpress.py'
+      - 'tests/test_wordpress_static.py'
+      - '.github/workflows/wordpress-migration-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify Python syntax
+        run: python -m py_compile scripts/build_from_wordpress.py scripts/publish_to_wordpress.py
+      - name: Test offline WordPress synchronization
+        run: python -m unittest discover -s tests -p 'test_wordpress_static.py' -v
