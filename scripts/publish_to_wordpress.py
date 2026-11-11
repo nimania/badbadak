@@ -38,7 +38,9 @@ def category(row):
 
 
 def slug(row):
-    return "badbadak-" + hashlib.sha256(str(row["id"]).encode()).hexdigest()[:20]
+    # Match existing GitHub /news/<id>/ URLs and the 34 migrated WordPress drafts.
+    raw = re.sub(r"[^A-Za-z0-9_-]", "_", str(row["id"]))[:160]
+    return raw or "badbadak-" + hashlib.sha256(str(row["id"]).encode()).hexdigest()[:20]
 
 
 def safe_url(url):
